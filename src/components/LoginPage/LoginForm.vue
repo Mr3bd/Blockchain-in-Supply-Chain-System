@@ -11,23 +11,30 @@
           <i class="fas" :class="[passwordFieldIcon]" @click="hidePassword = !hidePassword"></i>
           <input :type="passwordFieldType" id="password" v-model="password" placeholder="**********">
 
-          <button type="submit">Log in</button>
+          <button @click="login">Log in</button>
         </form>
       </div></div>
 
 </template>
 
-<script setup>
-  import { computed, ref } from "vue";
+<script>
+import { initWeb3 } from '../../web3Service'; // Import the web3Service.js file
 
-  const email = ref("");
-  const hidePassword = ref(true);
-  const password = ref("");
-
-  const passwordFieldIcon = computed(() => hidePassword.value ? "fa-eye" : "fa-eye-slash");
-  const passwordFieldType = computed(() => hidePassword.value ? "password" : "text");
-
-  const doLogin = () => alert("Not implemented yet :O");
+export default {
+  name: 'LoginPage',
+  methods: {
+    async login() {
+      try {
+        await initWeb3(); // Initialize Web3 and connect to MetaMask
+        // Optionally, you can perform further authentication checks here
+        // Redirect the user to the dashboard page or perform other actions upon successful login
+        this.$router.push('/dashboard');
+      } catch (error) {
+        console.error('Error logging in with MetaMask:', error);
+      }
+    }
+  }
+};
 </script>
 
 <style>
