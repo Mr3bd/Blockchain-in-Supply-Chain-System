@@ -3,23 +3,23 @@
   <div>
     <h1>Dashboard</h1>
     <p>Welcome, {{ account }}</p>
-    <button @click="logout">Logout</button>
+    <button @click="handleLogout">Logout</button>
   </div>
 </template>
 
 <script>
-import { getAccount, logout } from '../../web3Service'; // Import the logout function
+import { getAccount, logout as logoutUser } from '../../web3Service'; // Import the logout function with a different name
 
 export default {
   name: 'DashboardPage',
   setup() {
     const account = getAccount();
 
-    const logout = () => {
-      logout(); // Call the logout function
+    const handleLogout = () => {
+      logoutUser(); // Call the logout function from web3Service.js
     };
 
-    return { account, logout };
+    return { account, handleLogout };
   }
 };
 </script>

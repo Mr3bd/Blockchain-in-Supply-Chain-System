@@ -3,15 +3,12 @@
 
     <div id="login">
        <div id="form">
-        <form @submit.prevent="doLogin">
-          <label for="email">Email</label>
-          <input type="text" id="email" v-model="email" placeholder="elon@musk.io" autocomplete="off">
+        <form @submit.prevent="doLogin"  class="form-container">
+                    <div class="center-content">
 
-          <label for="password">Password</label>&nbsp;
-          <i class="fas" :class="[passwordFieldIcon]" @click="hidePassword = !hidePassword"></i>
-          <input :type="passwordFieldType" id="password" v-model="password" placeholder="**********">
-
-          <button @click="login">Log in</button>
+<img alt="MetaMaskLogo" class="logo" src="../../assets/metamask.svg" width="100" height="100" />
+<p class="login-text">Login with <span class="bold-text">Meta Mask</span></p>
+          <button @click="login">Log in</button></div>
         </form>
       </div></div>
 
@@ -41,6 +38,26 @@ export default {
 * {
   box-sizing: border-box;
   font-family: Verdana, sans-serif;
+}
+
+.bold-text {
+  font-weight: bold; /* Make text bold */
+  color: #f6851b; /* Set specific color */
+}
+.center-content {
+  text-align: center; /* Center content horizontally */
+}
+.login-text {
+  margin-top: 20px; /* Add margin top */
+  margin-bottom: 20px; /* Add margin bottom */
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+
 }
 
 div#login {

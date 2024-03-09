@@ -1,6 +1,7 @@
 // web3Service.js
-import { ref } from 'vue';
 import Web3 from 'web3';
+import { ref } from 'vue';
+import router from './router'; // Import the Vue Router instance
 
 let web3;
 let accounts;
@@ -30,4 +31,26 @@ const handleAccountChange = (newAccounts) => {
 
 export const getAccount = () => {
   return account;
+};
+
+// Function to clear user authentication state (logout)
+export const logout = () => {
+  // Clear authentication token from local storage (if applicable)
+  // localStorage.removeItem('token');
+
+  // Clear any other user-related data from local storage or session storage
+  // localStorage.removeItem('user');
+
+  console.log('Logging out...');
+  account.value = null;
+  window.ethereum.request({ method: 'eth_requestAccounts' })
+    .then(() => {
+      // Redirect to login page
+      router.push('/login');
+    })
+    .catch(error => {
+      console.error('Error logging out:', error);
+    });
+  console.log('Navigating to login page...');
+  router.push('/login'); // Redirect to login page
 };
