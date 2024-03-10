@@ -8,29 +8,50 @@
 
 <img alt="MetaMaskLogo" class="logo" src="../../assets/metamask.svg" width="100" height="100" />
 <p class="login-text">Login with <span class="bold-text">Meta Mask</span></p>
-          <button @click="login">Log in</button></div>
+          <button @click="login_metamask">Log in</button></div>
         </form>
       </div></div>
 
 </template>
 
 <script>
-import { initWeb3 } from '../../web3Service'; // Import the web3Service.js file
+import { initWeb3, login } from '../../web3Service'; // Import the web3Service.js file
 
 export default {
   name: 'LoginPage',
   methods: {
-    async login() {
-      try {
-        await initWeb3(); // Initialize Web3 and connect to MetaMask
-        // Optionally, you can perform further authentication checks here
-        // Redirect the user to the dashboard page or perform other actions upon successful login
-        this.$router.push('/dashboard');
-      } catch (error) {
-        console.error('Error logging in with MetaMask:', error);
+     async login_metamask() {
+  try {
+    // Initialize Web3 and connect to MetaMask
+    await initWeb3();
+
+    // Check if MetaMask account is connected
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+
+    // If account is connected, prompt the user to disconnect
+    if (accounts.length > 0) {
+      const disconnectConfirmed = confirm('You are currently logged in with MetaMask. Please disconnect your account and then click OK to continue.');
+
+      if (!disconnectConfirmed) {
+        return; // User canceled, do not proceed with login
       }
+
+      // Disconnect MetaMask account
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
     }
+
+    // Request account access from MetaMask
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+    // Optionally, you can perform further authentication checks here
+
+    // Redirect the user to the dashboard page or perform other actions upon successful login
+    this.$router.push('/dashboard');
+  } catch (error) {
+    console.error('Error logging in with MetaMask:', error);
   }
+}
+}
 };
 </script>
 

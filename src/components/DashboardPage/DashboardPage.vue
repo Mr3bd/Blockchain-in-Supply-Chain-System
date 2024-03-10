@@ -14,7 +14,7 @@ export default {
   name: 'DashboardPage',
   setup() {
     const account = getAccount();
-
+    
     const handleLogout = () => {
       logoutUser(); // Call the logout function from web3Service.js
     };
