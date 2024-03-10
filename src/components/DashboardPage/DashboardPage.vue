@@ -1,25 +1,47 @@
-<!-- DashboardPage.vue -->
+<script setup>
+import Sidebar from './Sidebar.vue'
+// import { getAccount } from '../../web3Service'; // Import the logout function with a different name
+
+// export default {
+//   name: 'DashboardPage',
+//   setup() {
+//     const account = getAccount();
+//     return {account};
+//   }
+// };/
+</script>
+
 <template>
-  <div>
-    <h1>Dashboard</h1>
-    <p>Welcome, {{ account }}</p>
-    <button @click="handleLogout">Logout</button>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <Sidebar />
+
+    <!-- Content -->
+    <router-view />
   </div>
 </template>
 
-<script>
-import { getAccount, logout as logoutUser } from '../../web3Service'; // Import the logout function with a different name
 
-export default {
-  name: 'DashboardPage',
-  setup() {
-    const account = getAccount();
-    
-    const handleLogout = () => {
-      logoutUser(); // Call the logout function from web3Service.js
-    };
+<style lang="scss">
+:root {
+  --primary: #00a36c;
+  --primary-alt: #00a36c;
+  --grey: #64748b;
+  --dark: #1e293b;
+  --dark-alt: #334155;
+  --light: #f1f5f9;
+  --sidebar-width: 300px;
+}
 
-    return { account, handleLogout };
-  }
-};
-</script>
+body {
+  background: var(--light);
+}
+
+button {
+  cursor: pointer;
+  appearance: none;
+  border: none;
+  outline: none;
+  background: none;
+}
+</style>

@@ -1,6 +1,19 @@
 @import './base.css';
 
-#app {
+#app .dashboard {
+  display: flex;
+
+  main {
+    flex: 1 1 0;
+    padding: 2rem;
+
+    @media (max-width: 1024px) {
+      padding-left: 6rem;
+    }
+  }
+}
+
+ #app .login {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -22,12 +35,12 @@ a,
 }
 
 @media (min-width: 1024px) {
-  body {
+   .login body {
     display: flex;
     place-items: center;
   }
 
-  #app {
+  #app .login {
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;

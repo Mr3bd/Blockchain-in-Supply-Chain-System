@@ -1,37 +1,51 @@
 // web3Service.js
-import Web3 from 'web3';
-import { ref } from 'vue';
-import router from './router'; // Import the Vue Router instance
+import Web3 from "web3";
+import { ref } from "vue";
+import router from "./router"; // Import the Vue Router instance
 
 let web3;
 let accounts;
 const account = ref(null);
 
-export const initWeb3 = async (origin) => {
+// Define the handleAccountsChanged function
+const handleAccountsChanged = (newAccounts) => {
+  if (newAccounts != null) {
+    if (newAccounts.length == 0) {
+      logout();
+    } else {
+      accounts = newAccounts;
+      login();
+    }
+  } else {
+    logout();
+  }
+};
+export const initWeb3 = async () => {
+  // Listen for the accountsChanged event
+
   if (window.ethereum) {
     web3 = new Web3(window.ethereum);
-    try {
-      // Request account access every time
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      accounts = await web3.eth.getAccounts();
-      account.value = accounts[0];
-      // Listen for account change
-      window.ethereum.on('accountsChanged', handleAccountChange);
-    } catch (error) {
-      console.error('User denied account access');
+    accounts = await web3.eth.getAccounts();
+
+    if (accounts != null) {
+      if (accounts.length == 0) {
+        accounts = null;
+      } else {
+        account.value = accounts[0];
+      }
     }
 
+    console.log("initWeb3 => Account: " + account.value);
+    window.ethereum.on("accountsChanged", handleAccountsChanged);
   } else {
-    console.error('Please install MetaMask');
+    console.error("MetaMask not detected");
   }
 };
 
-const handleAccountChange = (newAccounts) => {
-  if (newAccounts.length == 0) {
-    logout();
-  }
-  else{
-    login();
+export const openMetaMask = async () => {
+  if (typeof window.ethereum !== "undefined") {
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    window.ethereum.on("accountsChanged", handleAccountChange);
   }
 };
 
@@ -39,24 +53,21 @@ export const getAccount = () => {
   return account;
 };
 
-// Function to clear user authentication state (logout)
-export const logout = () => {
-  console.log('Logging out...');
-
-  account.value = null;
-  
-  window.location.reload();
-  
-  router.push('/login'); // Redirect to login page
-  
-  console.log('Navigating to login page...');
+export const getAccounts = () => {
+  return accounts;
 };
 
+// Function to clear user authentication state (logout)
+export const logout = () => {
+  console.log("Logging out...");
+  accounts = null;
+  account.value = null;
+  // window.location.reload();
+  router.push("/login"); // Redirect to login page
+  console.log("Navigating to login page...");
+};
 
-export const login = async () =>  {
-
-  account.value = newAccounts[0];
-
-  router.push('/dashboard'); // Redirect to login page
-
-}
+export const login = async () => {
+  account.value = accounts[0];
+  router.push("/dashboard"); // Redirect to login page
+};
