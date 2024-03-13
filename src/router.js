@@ -1,9 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from "vue-router";
 import LoginPage from "./components/LoginPage/LoginPage.vue";
 import AddMaterial from "./views/AddMaterial.vue";
 import Materials from "./views/Materials.vue";
 import DashboardPage from "./components/DashboardPage/DashboardPage.vue";
-import { getAccount, getAccounts } from "./web3Service";
+import { getAccount, getAccounts, logout } from "./web3Service";
+import { postData } from "./apiService.js";
+import { user } from "@/globalVariables";
 
 const routes = [
   { path: "/", redirect: "/dashboard" }, // Redirect root path to '/dashboard'
@@ -39,8 +41,31 @@ router.beforeEach((to, from, next) => {
     next("/dashboard");
   } else {
     // Otherwise, proceed with the navigation
-    next();
+    console.log(to.path);
+    if (to.path == "/dashboard") {
+      check_login(next);
+    } else {
+      next();
+    }
   }
 });
+
+export const check_login = async (next) => {
+  postData("login", { id: getAccount().value })
+    .then((response) => {
+      user.value = response["user"];
+      console.log(user.value.name);
+      if (user.value.deleted == 1) {
+        logout();
+      } else {
+        next();
+      }
+    })
+    .catch((error) => {
+      console.error("Error while making POST request:", error);
+      // Handle the error as needed
+      logout();
+    });
+};
 
 export default router;
