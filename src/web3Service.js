@@ -2,6 +2,8 @@
 import Web3 from "web3";
 import { ref } from "vue";
 import router from "./router"; // Import the Vue Router instance
+import { postData } from "./apiService.js";
+import { user } from "@/globalVariables";
 
 let web3;
 let accounts;
@@ -68,6 +70,25 @@ export const logout = () => {
 };
 
 export const login = async () => {
-  account.value = accounts[0];
-  router.push("/dashboard"); // Redirect to login page
+  check_login();
+};
+
+export const check_login = async (next) => {
+  postData("login", { id: getAccount().value })
+    .then((response) => {
+      user.value = response["user"];
+      console.log(user.value.id);
+
+      if (user.value.deleted == 1) {
+        logout();
+      } else {
+        account.value = accounts[0];
+        router.push("/dashboard"); // Redirect to login page
+      }
+    })
+    .catch((error) => {
+      console.error("Error while making POST request:", error);
+      // Handle the error as needed
+      logout();
+    });
 };

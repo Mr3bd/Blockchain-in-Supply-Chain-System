@@ -1,9 +1,6 @@
 <template>
 	<aside :class="`${is_expanded ? 'is-expanded' : ''}`">
-		<div class="dashboard-logo">
-			<img alt="BSC Logo" src="../../assets/logo.svg" width="96" />
-			<h2 class="green">BSC</h2>
-		</div>
+
 
 		<div class="menu-toggle-wrap">
 			<button class="menu-toggle" @click="ToggleMenu">
@@ -77,15 +74,15 @@ aside {
 		flex: 1 1 0%;
 	}
 
-	.dashboard-logo {
-		display: inline-flex;
-		margin-bottom: 1rem;
+	// .dashboard-logo {
+	// 	display: inline-flex;
+	// 	margin-bottom: 1rem;
 
-		img {
-			width: 2rem;
-			margin-right: 16px;
-		}
-	}
+	// 	img {
+	// 		width: 2rem;
+	// 		margin-right: 16px;
+	// 	}
+	// }
 
 	.menu-toggle-wrap {
 		display: flex;
@@ -183,7 +180,7 @@ aside {
 		width: var(--sidebar-width);
 
 		.menu-toggle-wrap {
-			top: -3rem;
+			top: 0;
 
 			.menu-toggle {
 				transform: rotate(-180deg);

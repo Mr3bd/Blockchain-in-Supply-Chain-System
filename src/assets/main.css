@@ -1,19 +1,30 @@
 @import './base.css';
 
 #app .dashboard {
+
   display: flex;
+  flex-direction: column;
+    height: 100vh;
+    /* Ensure dashboard takes up full viewport height */
 
-  main {
-    flex: 1 1 0;
-    padding: 2rem;
 
-    @media (max-width: 1024px) {
-      padding-left: 6rem;
+  .main-content {
+      display: flex;
+      flex: 1;
+      /* Grow to fill remaining space */
     }
+.content {
+  flex: 1;
+  /* Grow to fill remaining space */
+  padding: 20px;
+  /* Adjust padding as needed */
+  overflow-y: auto;
+  /* Add scroll if content overflows */
   }
 }
 
- #app .login {
+
+#app .login {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -35,7 +46,7 @@ a,
 }
 
 @media (min-width: 1024px) {
-   .login body {
+  .login body {
     display: flex;
     place-items: center;
   }

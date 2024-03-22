@@ -1,27 +1,25 @@
 <script setup>
 import Sidebar from './Sidebar.vue'
-// import { getAccount } from '../../web3Service'; // Import the logout function with a different name
+import AppBar from '../AppBar.vue'
 
-// export default {
-//   name: 'DashboardPage',
-//   setup() {
-//     const account = getAccount();
-//     return {account};
-//   }
-// };/
 </script>
 
 <template>
   <div class="dashboard">
-    <!-- Sidebar -->
-    <Sidebar />
+    <!-- App Bar -->
+    <AppBar />
 
-    <!-- Content -->
-    <router-view />
+    <div class="main-content">
+      <!-- Sidebar -->
+      <Sidebar />
+
+      <!-- Content -->
+      <div class="content">
+        <router-view />
+      </div>
+    </div>
   </div>
 </template>
-
-
 <style lang="scss">
 :root {
   --primary: #00a36c;

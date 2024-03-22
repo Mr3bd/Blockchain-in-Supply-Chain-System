@@ -40,12 +40,14 @@ router.beforeEach((to, from, next) => {
     // redirect to the dashboard page
     next("/dashboard");
   } else {
-    // Otherwise, proceed with the navigation
-    console.log(to.path);
-    if (to.path == "/dashboard") {
-      check_login(next);
-    } else {
+    if (user.value.id != null) {
       next();
+    } else {
+      if (getAccount().value != null) {
+        check_login(next);
+      } else {
+        next();
+      }
     }
   }
 });
@@ -54,7 +56,7 @@ export const check_login = async (next) => {
   postData("login", { id: getAccount().value })
     .then((response) => {
       user.value = response["user"];
-      console.log(user.value.name);
+      console.log(response);
       if (user.value.deleted == 1) {
         logout();
       } else {

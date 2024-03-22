@@ -1,5 +1,6 @@
 // Define a reactive ref for the user object
 import { ref } from "vue";
+import { roleModel } from "@/models/roleModel.js"; // Import the userModel
 
 // Initialize the user object with null values
 const userModel = ref({
@@ -8,6 +9,7 @@ const userModel = ref({
   role: null,
   deleted: null,
   logtime: null,
+  role_info: roleModel,
 });
 
 // Function to update the user object with API response data
