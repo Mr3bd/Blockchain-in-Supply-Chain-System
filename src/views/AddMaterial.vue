@@ -17,6 +17,10 @@
 </template>
 
 <script>
+import { getAccount, getAccounts, logout } from "@/web3Service.js" // Import the web3Service.js file
+import Web3 from 'web3'; // Import Web3 library
+import MaterialManagementContract from '@/contracts/MaterialManagement.json'; // Import the MaterialManagement contract ABI
+
 export default {
 	data() {
 		return {
@@ -30,10 +34,19 @@ export default {
 		}
 	},
 	methods: {
-		addItem() {
+		addItem: async function () { // Mark the function as async
 			if (!this.isInvalidQuantity) {
+				const contractAddress = '0xfB972D171f6Ff674C7fBdeb19891177CFC51cbee';
+				const contract = new Web3.eth.Contract(MaterialManagementContract.abi, contractAddress); // Use Web3 from the Web3 library
 				// Proceed with adding the item
-				console.log('Adding item:', this.itemName, 'Quantity:', this.itemQuantity);
+				try {
+					// Call the addMaterial function of the smart contract
+					const accounts = await Web3.eth.requestAccounts(); // Request user accounts
+					const tx = await contract.methods.addMaterial(this.itemName, this.itemQuantity).send({ from: accounts[0] }); // Use accounts[0]
+					console.log('Adding item:', tx);
+				} catch (error) {
+					console.error('Error adding material:', error);
+				}
 			}
 		}
 	}
