@@ -1,14 +1,17 @@
 <template>
 	<div class="container">
 		<div class="input-box">
-			<input type="text" placeholder="Name" v-model="itemName" />
+			<label for="itemName">Name:</label>
+			<input id="itemName" type="text" placeholder="Enter name" v-model="itemName" />
 		</div>
 		<div class="input-box">
-			<input type="number" placeholder="Quantity" v-model.number="itemQuantity" />
+			<label for="itemQuantity">Quantity:</label>
+			<input id="itemQuantity" type="number" placeholder="Enter quantity" v-model.number="itemQuantity" />
 		</div>
-		<button @click="addItem" class="add-button" :disabled="isInvalidQuantity">
+		<button @click="addItem" class="add-button" :class="{ 'disabled': isInvalidQuantity }"
+			:disabled="isInvalidQuantity">
 			<span class="material-icons">add</span>
-			Add
+			<span>Add</span>
 		</button>
 	</div>
 </template>
@@ -42,17 +45,24 @@ export default {
 	background-color: #1e293b;
 	padding: 20px;
 	border-radius: 8px;
-	width: 65%;
+	width: 50%;
 	margin: 0 auto;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	/* Center children horizontally */
 }
 
 .input-box {
 	margin-bottom: 20px;
+	/* Increased spacing between input boxes */
 	width: 100%;
+}
+
+.input-box label {
+	display: block;
+	/* Display labels as block elements */
+	margin-bottom: 5px;
+	/* Add space between labels and inputs */
 }
 
 .input-box input {
@@ -65,16 +75,40 @@ export default {
 
 .add-button {
 	background-color: #4caf50;
+	/* Default button color */
 	color: white;
 	border: none;
 	padding: 10px 20px;
 	border-radius: 4px;
 	cursor: pointer;
+	width: 100%;
+	/* Make button take full width */
+	max-width: 200px;
+	/* Limit maximum width of button */
 	display: flex;
+	justify-content: center;
+	/* Center content horizontally */
 	align-items: center;
+	/* Center content vertically */
+}
+
+.add-button:disabled {
+	background-color: #7f8c8d;
+	/* Disabled button color */
+}
+
+.add-button span {
+	margin-left: 5px;
+	/* Add spacing between icon and text */
 }
 
 .add-button i {
 	margin-right: 5px;
+	/* Add spacing between icon and text */
+}
+
+.disabled {
+	cursor: not-allowed;
+	/* Change cursor when button is disabled */
 }
 </style>
