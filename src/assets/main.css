@@ -96,12 +96,12 @@ a,
   /* Default button color */
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 4px 4px;
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
   /* Make button take full width */
-  max-width: 200px;
+  max-width: 100px;
   /* Limit maximum width of button */
   display: flex;
   justify-content: center;
@@ -128,4 +128,75 @@ a,
 .disabled {
   cursor: not-allowed;
   /* Change cursor when button is disabled */
+}
+/* Enabled button */
+.prev-next-btn {
+  color: white;
+  /* Change the text color of enabled buttons */
+  background-color: var(--primary);
+  /* Change the background color of enabled buttons */
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Disabled button */
+.prev-next-btn:disabled {
+  background-color: #64748b1c;
+  color: white;
+  cursor: not-allowed;
+}
+
+.pn-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.app-table {
+  width: 100%;
+  border-collapse: separate;
+  border-radius: 10px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  /* Add border radius */
+}
+
+.app-table th,
+.app-table td {
+  padding: 8px;
+  text-align: left;
+}
+
+.app-table th {
+  background-color: #CFCFCF;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+}
+
+.app-table tbody tr:nth-child(odd) {
+  background-color: #1e293b;
+}
+
+.app-table tbody tr:nth-child(even) {
+  background-color: #1e293b;
+}
+
+.app-table tbody tr td {
+  color: white;
+  text-align: center;
+}
+
+.app-table tbody tr {
+  border-bottom: 1px solid white;
+  border-left: 10px solid transparent;
+  border-radius: 10px;
+  /* Add border radius */
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
 }

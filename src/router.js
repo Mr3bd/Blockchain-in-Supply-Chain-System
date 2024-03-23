@@ -1,11 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginPage from "./components/LoginPage/LoginPage.vue";
-import AddMaterial from "./views/AddMaterial.vue";
-import Materials from "./views/Materials.vue";
 import DashboardPage from "./components/DashboardPage/DashboardPage.vue";
 import { getAccount, getAccounts, logout } from "./web3Service";
 import { postData } from "./apiService.js";
 import { user } from "@/globalVariables";
+import AddMaterial from "./views/AddMaterial.vue";
+import Materials from "./views/Materials.vue";
+import AddUser from "./views/AddUser.vue";
+import Users from "./views/Users.vue";
 
 const routes = [
   { path: "/", redirect: "/dashboard" }, // Redirect root path to '/dashboard'
@@ -17,6 +19,8 @@ const routes = [
     children: [
       { path: "addmaterial", component: AddMaterial },
       { path: "materials", component: Materials },
+      { path: "users", component: Users },
+      { path: "adduser", component: AddUser },
     ],
   },
 ];

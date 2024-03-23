@@ -1,8 +1,13 @@
-
 <template>
 	<div>
-		<h1>Material List</h1>
-		<table class="material-table">
+		<div class="app-header">
+			<h1>Materials</h1>
+			<button @click="goToAddMaterialPage" class="add-button">
+				<span class="material-icons">add</span>
+				<span>Add</span>
+			</button>
+		</div>
+		<table class="app-table">
 			<thead>
 				<tr>
 					<th>Trans ID</th>
@@ -12,7 +17,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="material in materials.materials" :key="material.id">
+				<tr v-for="material in materials" :key="material.id">
 					<td>{{ truncateTransId(material.trans_id) }}</td>
 					<td>{{ material.name }}</td>
 					<td>{{ material.quantity }}</td>
@@ -20,17 +25,19 @@
 				</tr>
 			</tbody>
 		</table>
-		<button @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
-		<button @click="nextPage">Next Page</button>
+		<div class="pn-buttons-container">
+			<button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
+			<button class='prev-next-btn' @click="nextPage" :disabled="materials.length < 10">Next Page</button>
+
+		</div>
 	</div>
 </template>
 
 <script>
 import { ref } from 'vue';
 import { getAccount } from "@/web3Service.js" // Import the web3Service.js file
-
-
-
+import router from "@/router.js"; // Import the Vue Router instance
+import { getData } from "@/apiService.js";
 export default {
 	setup() {
 		const materials = ref([]);
@@ -38,15 +45,13 @@ export default {
 		const pageSize = 10; // Change this according to your page size
 
 		const fetchData = async () => {
-			try {
-				const response = await fetch(`http://127.0.0.1:8000/api/getMaterials?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`);
-				const data = await response.json();
-				console.log(data);
-				materials.value = data;
-
-			} catch (error) {
-				console.error('Error:', error);
-			}
+			getData(`getMaterials?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
+				.then((response) => {
+					materials.value = response.materials || [];
+				})
+				.catch((error) => {
+					console.error("Error while making Get request:", error);
+				});
 		};
 
 		const nextPage = () => {
@@ -60,14 +65,18 @@ export default {
 				fetchData();
 			}
 		};
-
+		const goToAddMaterialPage = () => {
+			router.push("/dashboard/addmaterial");
+		};
 		fetchData(); // Fetch data on component mount
 
 		return {
 			materials,
 			nextPage,
 			previousPage,
-			currentPage
+			currentPage,
+			pageSize,
+			goToAddMaterialPage
 		};
 	},
 	data() {
@@ -79,47 +88,3 @@ export default {
 	}
 };
 </script>
-<style scoped>
-.material-table {
-	width: 100%;
-	border-collapse: separate;
-	/* Change to separate */
-	border-radius: 10px;
-	/* Add border radius */
-}
-
-.material-table th,
-.material-table td {
-	padding: 8px;
-	text-align: left;
-}
-
-.material-table th {
-	background-color: #CFCFCF;
-	color: black;
-	font-weight: bold;
-	text-align: center;
-	border: none;
-}
-
-.material-table tbody tr:nth-child(odd) {
-	background-color: #1e293b;
-}
-
-.material-table tbody tr:nth-child(even) {
-	background-color: #1e293b;
-}
-
-.material-table tbody tr td {
-	color: white;
-	text-align: center;
-}
-
-.material-table tbody tr {
-	border-bottom: 1px solid white;
-}
-
-button {
-	margin-top: 10px;
-}
-</style>

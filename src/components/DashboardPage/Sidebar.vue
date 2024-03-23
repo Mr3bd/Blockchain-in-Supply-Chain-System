@@ -10,6 +10,11 @@
 
 		<h3>Menu</h3>
 		<div class="menu">
+			<router-link to="/dashboard/Users" class="button">
+				<span class="material-icons">group</span>
+				<span class="text">Users</span>
+			</router-link>
+
 			<router-link to="/dashboard/materials" class="button">
 				<span class="material-icons">list</span>
 				<span class="text">Materials</span>

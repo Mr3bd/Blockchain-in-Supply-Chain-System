@@ -17,3 +17,15 @@ export const postData = async (endpoint, data) => {
     throw error;
   }
 };
+
+
+export const getData = async (endpoint, data) => {
+  try {
+    const response = await fetch(`${base_url}/${endpoint}`);
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    console.error("Error while making POST request:", error);
+    throw error;
+  }
+};

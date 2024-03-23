@@ -1,4 +1,5 @@
 <template>
+	<h1>Add Material</h1>
 	<div class="container">
 		<div class="input-box">
 			<label for="itemName">Name:</label>
