@@ -44,19 +44,19 @@
     </div>
     <Snackbar ref="snackbarRef" />
 </template>
-
 <script>
 import { ref } from 'vue';
-import { getAccount } from "@/web3Service.js" // Import the web3Service.js file
-import router from "@/router.js"; // Import the Vue Router instance
+import { getAccount } from "@/web3Service.js";
+import router from "@/router.js";
 import { getData, postData } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 
 export default {
     setup() {
         const users = ref([]);
-        let currentPage = ref(1);
-        const pageSize = 10; // Change this according to your page size
+        const currentPage = ref(1);
+        const pageSize = 10;
+        const snackbarRef = ref(null);
 
         const fetchData = async () => {
             getData(`getUsers?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
@@ -79,6 +79,7 @@ export default {
                 fetchData();
             }
         };
+
         const goToAddUserPage = () => {
             router.push("/dashboard/adduser");
         };
@@ -86,30 +87,28 @@ export default {
         const deleteUser = (uId) => {
             postData("deleteUser", { log_id: getAccount().value, id: uId })
                 .then((response) => {
-                    this.$refs.snackbarRef.show('The user has been deleted', 'success', 3000);
-
+                    snackbarRef.value.show('The user has been deleted', 'success', 3000);
                     fetchData();
                 })
                 .catch((error) => {
-                    this.$refs.snackbarRef.show('Something went wrong', 'success', 3000);
-
-                    console.error(response);
-
+                    snackbarRef.value.show('Something went wrong', 'error', 3000);
+                    console.error(error);
                 });
         };
+
         const activateUser = (uId) => {
             postData("activateUser", { log_id: getAccount().value, id: uId })
                 .then((response) => {
-                    this.$refs.snackbarRef.show('The user has been activated', 'success', 3000);
+                    snackbarRef.value.show('The user has been activated', 'success', 3000);
                     fetchData();
                 })
                 .catch((error) => {
-                    this.$refs.snackbarRef.show('Something went wrong', 'success', 3000);
-
+                    snackbarRef.value.show('Something went wrong', 'error', 3000);
+                    console.error(error);
                 });
-
         };
-        fetchData(); // Fetch data on component mount
+
+        fetchData();
 
         return {
             users,
@@ -120,18 +119,12 @@ export default {
             goToAddUserPage,
             deleteUser,
             activateUser,
-            getAccount,
+            snackbarRef,
+            getAccount
         };
     },
     components: {
         Snackbar
-    },
-    data() {
-        return {
-            truncateTransId: function (transId) {
-                return transId.slice(0, 24) + '...';
-            }
-        };
     }
 };
 </script>

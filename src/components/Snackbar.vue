@@ -1,10 +1,12 @@
 <template>
-    <div v-if="showSnackbar" class="custom-snackbar" :class="[snackbarColor]">
-        <div class="content">
-            <span class="text">{{ message }}</span>
-            <button @click="dismissSnackbar" class="dismiss-btn">Dismiss</button>
+    <transition name="snackbar">
+        <div v-if="showSnackbar" class="custom-snackbar" :class="[snackbarColor]">
+            <div class="content">
+                <span class="text">{{ message }}</span>
+                <button @click="dismissSnackbar" class="dismiss-btn">Dismiss</button>
+            </div>
         </div>
-    </div>
+    </transition>
 </template>
 
 <script>
@@ -46,6 +48,7 @@ export default {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
+    padding: 0;
     border-radius: 4px;
     color: #fff;
     background-color: #323232;
@@ -94,6 +97,16 @@ export default {
     /* Blue color for info messages */
 }
 
+/* Animation */
+.snackbar-enter-active,
+.snackbar-leave-active {
+    transition: opacity 0.5s;
+}
+
+.snackbar-enter,
+.snackbar-leave-to {
+    opacity: 0;
+}
 .warning {
     background-color: #ff9800;
     /* Orange color for warning messages */
