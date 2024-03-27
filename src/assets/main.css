@@ -200,3 +200,8 @@ a,
   display: flex;
   justify-content: space-between;
 }
+
+.bottom-sheet-container {
+  background-color: #1e293b;
+  /* Change color here */
+}

@@ -21,7 +21,8 @@
             <tr v-for="user in users" :key="user.id">
                 <td>{{ user.id }}</td>
                 <td>{{ user.name }}</td>
-                <td>{{ user.role_info.role_name }}</td>
+                <td><button @click="openRoleSelection(user)" class="role-button">{{ user.role_info.role_name }}</button>
+                </td>
                 <td>
                     <template v-if="user.id === getAccount().value">
                         <span>-</span>
@@ -43,6 +44,23 @@
 
     </div>
     <Snackbar ref="snackbarRef" />
+    <v-bottom-sheet v-model="showRoleSelectionRef">
+        <v-list style="background-color: #1e293b; ">
+            <v-list-item v-for="role in roles" :key="role.id" @click="selectRole(role.id)">
+                <v-list-item-title style="display: flex; align-items: center; color: white; margin: 12px;">
+                    {{ role.name }}
+                    <span v-if="role.id === selectedRoleId" class="material-icons"
+                        style="margin-left: 8px; color: #00a36c;">check</span>
+                </v-list-item-title>
+            </v-list-item>
+        </v-list>
+    </v-bottom-sheet>
+
+    <!-- <RoleSelection v-if="showRoleSelection" :roles="roles" :selectedRoleId="selectedRoleId" @roleSelected="selectRole"
+        @close="showRoleSelection = false" />
+
+    <BottomSheetTemp>
+    </BottomSheetTemp> -->
 </template>
 <script>
 import { ref } from 'vue';
@@ -50,6 +68,7 @@ import { getAccount } from "@/web3Service.js";
 import router from "@/router.js";
 import { getData, postData } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
+import { reactive } from 'vue';
 
 export default {
     setup() {
@@ -57,6 +76,10 @@ export default {
         const currentPage = ref(1);
         const pageSize = 10;
         const snackbarRef = ref(null);
+        const roles = ref([]);
+        const selectedUser = reactive({}); // To keep track of the selected user
+        const selectedRoleId = ref(null);
+        const showRoleSelectionRef = ref(false);
 
         const fetchData = async () => {
             getData(`getUsers?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
@@ -108,19 +131,54 @@ export default {
                 });
         };
 
+        const openRoleSelection = async (user) => {
+            selectedUser.value = user;
+            selectedRoleId.value = selectedUser.value.role_info.role_id;
+            getData(`rolesLookUp?page=1&pageSize=100`)
+                .then((response) => {
+                    roles.value = response.roles || [];
+                    showRoleSelectionRef.value = true;
+                })
+                .catch((error) => {
+                    console.error('Error fetching roles:', error);
+                });
+
+        };
+
+        const selectRole = async (roleId) => {
+            selectedUser.value.role_info.role_id = roleId; // Update user's role ID
+            postData("changeUserRole", { log_id: getAccount().value, id: selectedUser.value.id, role_id: roleId })
+                .then((response) => {
+                    showRoleSelectionRef.value = false; // Hide role selection component
+                    snackbarRef.value.show('Role updated successfully', 'success', 3000);
+                    fetchData();
+                })
+                .catch((error) => {
+                    showRoleSelectionRef.value = false;
+                    snackbarRef.value.show('Error updating role', 'error', 3000);
+                    console.error(error);
+                });
+        };
+
         fetchData();
 
         return {
             users,
-            nextPage,
-            previousPage,
             currentPage,
             pageSize,
+            snackbarRef,
+            roles,
+            selectedUser,
+            selectedRoleId,
+            showRoleSelectionRef,
+            nextPage,
+            previousPage,
             goToAddUserPage,
             deleteUser,
             activateUser,
-            snackbarRef,
-            getAccount
+            getAccount,
+            selectRole,
+            openRoleSelection,
         };
     },
     components: {
@@ -134,11 +192,23 @@ export default {
     background-color: #ff181836;
     color: #ff1818;
     border-radius: 5px;
+    padding: 4px;
 }
 
 .activate-button {
     background-color: #00a36c36;
     color: #00a36c;
     border-radius: 5px;
+    padding: 4px;
+}
+
+.role-button {
+    border: none;
+    cursor: pointer;
+    background-color: #2754ba36;
+    color: #2754ba;
+    border-radius: 5px;
+    font-weight: 700;
+    padding: 4px;
 }
 </style>

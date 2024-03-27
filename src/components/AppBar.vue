@@ -4,7 +4,7 @@
             <img alt="BSC Logo" src="@/assets/logo.svg" width="96" />
             <h2 class="green">BSC</h2>
         </div>
-        <p class="role">{{ user.name }} - {{ user.role_info.role_name }}</p>
+        <p class="role">{{ user.name }} ({{ user.role_info.role_name }})</p>
     </header>
 </template>
 
