@@ -205,3 +205,27 @@ a,
   background-color: #1e293b;
   /* Change color here */
 }
+
+.delete-button {
+  background-color: #ff181836;
+  color: #ff1818;
+  border-radius: 5px;
+  padding: 4px;
+}
+
+.activate-button {
+  background-color: #00a36c36;
+  color: #00a36c;
+  border-radius: 5px;
+  padding: 4px;
+}
+
+.role-button {
+  border: none;
+  cursor: pointer;
+  /* background-color: #2754ba36; */
+  color: #2754ba;
+  border-radius: 5px;
+  font-weight: 700;
+  padding: 4px;
+}

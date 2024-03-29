@@ -10,7 +10,7 @@
     <table class="app-table">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>Wallet Id</th>
                 <th>Name</th>
                 <th>Role</th>
                 <th>Status</th>
@@ -21,14 +21,22 @@
             <tr v-for="user in users" :key="user.id">
                 <td>{{ user.id }}</td>
                 <td>{{ user.name }}</td>
-                <td><button @click="openRoleSelection(user)" class="role-button">{{ user.role_info.role_name }}</button>
+                <td>
+                    <template v-if="user.id === getAccount().value">
+                        <span>-</span>
+                    </template>
+
+                    <template v-else>
+                        <button @click="openRoleSelection(user)" class="role-button">{{ user.role_info.role_name
+                            }}</button> </template>
                 </td>
+
                 <td>
                     <template v-if="user.id === getAccount().value">
                         <span>-</span>
                     </template>
                     <template v-else-if="user.deleted === 0">
-                        <button @click="deleteUser(user.id)" class="delete-button">Delete</button>
+                        <button @click="deleteUser(user.id)" class="delete-button">Disable</button>
                     </template>
                     <template v-else>
                         <button @click="activateUser(user.id)" class="activate-button">Activate</button>
@@ -187,28 +195,3 @@ export default {
 };
 </script>
 
-<style>
-.delete-button {
-    background-color: #ff181836;
-    color: #ff1818;
-    border-radius: 5px;
-    padding: 4px;
-}
-
-.activate-button {
-    background-color: #00a36c36;
-    color: #00a36c;
-    border-radius: 5px;
-    padding: 4px;
-}
-
-.role-button {
-    border: none;
-    cursor: pointer;
-    background-color: #2754ba36;
-    color: #2754ba;
-    border-radius: 5px;
-    font-weight: 700;
-    padding: 4px;
-}
-</style>

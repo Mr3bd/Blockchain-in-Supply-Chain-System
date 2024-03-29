@@ -36,7 +36,7 @@ export default {
 	},
 	computed: {
 		isInvalidQuantity() {
-			return this.itemQuantity <= 0; // Checks if quantity is non-positive
+			return this.itemQuantity <= 0 || this.itemName === ''; // Checks if quantity is non-positive
 		}
 	},
 	components: {
@@ -61,7 +61,15 @@ export default {
 
 					await postData("addMaterial", { log_id: getAccount().value, trans_id: trans_id, name: this.itemName, quantity: this.itemQuantity })
 						.then((response) => {
-							this.$refs.snackbarRef.show('The material has been added', 'success', 3000);
+
+							if (response.success != null) {
+								this.itemName = '';
+								this.itemQuantity = '';
+								this.$refs.snackbarRef.show('The material has been added', 'success', 3000);
+							}
+							else {
+								this.$refs.snackbarRef.show('Error adding material', 'error', 3000);
+							}
 						})
 						.catch((error) => {
 							this.$refs.snackbarRef.show('Error adding material', 'error', 3000);
