@@ -8,6 +8,8 @@ import AddMaterial from "./views/AddMaterial.vue";
 import Materials from "./views/Materials.vue";
 import AddUser from "./views/AddUser.vue";
 import Users from "./views/Users.vue";
+import Products from "./views/Products.vue";
+import AddProduct from "./views/AddProduct.vue";
 
 const routes = [
   { path: "/", redirect: "/dashboard" }, // Redirect root path to '/dashboard'
@@ -21,6 +23,8 @@ const routes = [
       { path: "materials", component: Materials },
       { path: "users", component: Users },
       { path: "adduser", component: AddUser },
+      { path: "products", component: Products },
+      { path: "addproduct", component: AddProduct },
     ],
   },
 ];

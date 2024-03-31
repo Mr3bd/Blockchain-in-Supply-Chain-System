@@ -16,6 +16,7 @@ const handleAccountsChanged = (newAccounts) => {
       logout();
     } else {
       accounts = newAccounts;
+      account.value = accounts[0];
       login();
     }
   } else {
@@ -36,8 +37,6 @@ export const initWeb3 = async () => {
         account.value = accounts[0];
       }
     }
-
-    console.log("initWeb3 => Account: " + account.value);
     window.ethereum.on("accountsChanged", handleAccountsChanged);
   } else {
     console.error("MetaMask not detected");
@@ -47,7 +46,7 @@ export const initWeb3 = async () => {
 export const openMetaMask = async () => {
   if (typeof window.ethereum !== "undefined") {
     await window.ethereum.request({ method: "eth_requestAccounts" });
-    window.ethereum.on("accountsChanged", handleAccountChange);
+    window.ethereum.on("accountsChanged", handleAccountsChanged);
   }
 };
 
@@ -74,8 +73,9 @@ export const login = async () => {
 };
 
 export const check_login = async (next) => {
-  postData("login", { id: getAccount().value })
+  postData("login", { id: account.value })
     .then((response) => {
+      console.log(response);
       user.value = response["user"];
       console.log(user.value.id);
 

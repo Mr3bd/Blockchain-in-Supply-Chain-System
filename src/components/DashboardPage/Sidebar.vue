@@ -10,19 +10,19 @@
 
 		<h3>Menu</h3>
 		<div class="menu">
-			<router-link to="/dashboard/Users" class="button">
-				<span class="material-icons">group</span>
-				<span class="text">Users</span>
-			</router-link>
 
+			<router-link to="/dashboard/products" class="button">
+				<span class="material-icons">inventory_2</span>
+				<span class="text">Products</span>
+			</router-link>
 			<router-link to="/dashboard/materials" class="button">
 				<span class="material-icons">list</span>
 				<span class="text">Materials</span>
 			</router-link>
 
-			<router-link to="/dashboard/addmaterial" class="button">
-				<span class="material-icons">add</span>
-				<span class="text">Add Material</span>
+			<router-link to="/dashboard/Users" class="button">
+				<span class="material-icons">group</span>
+				<span class="text">Users</span>
 			</router-link>
 			<!-- <router-link to="/addproduct" class="button">
 				<span class="material-icons">description</span>
