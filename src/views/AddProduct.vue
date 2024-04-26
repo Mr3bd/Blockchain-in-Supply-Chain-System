@@ -1,44 +1,66 @@
 <template>
 
     <div class="container">
-        <h2>Add Product</h2>
-        <form @submit.prevent="addProduct">
+        <h2 class="input-title">Add Product</h2>
+        <form>
             <div class="input-box">
-                <label for="name">Name:</label>
+                <label for="name">Name</label>
                 <input id="name" type="text" placeholder="Enter name" v-model="product.name" />
             </div>
             <div class="input-box">
-                <label for="price">Price (for each one):</label>
+                <label for="price">Price per one (ETH)</label>
                 <input id="price" type="number" placeholder="Enter price" v-model.number="product.price" />
             </div>
             <div class="input-box">
-                <label for="quantity">Quantity:</label>
+                <label for="quantity">Quantity</label>
                 <input id="quantity" type="number" placeholder="Enter quantity" v-model.number="product.quantity" />
             </div>
-            <div class="material-list">
-                <h3>Materials</h3>
+            <h3 class="input-sub-title">Materials</h3>
+            <div class="material-list" style="margin-left: 30px;">
+
                 <ul v-for="(materialBlock, index) in materialBlocks" :key="index">
                     <li>
-                        <select v-model="materialBlock.materialId">
-                            <option value="">Select Material</option>
-                            <option v-for="material in materials" :key="material.trans_id" :value="material.trans_id"
-                                :disabled="materialSelected(material.trans_id)">
-                                {{ material.name }} ({{ material.quantity }} available)
-                            </option>
+                        <div class="material-block-row">
+                            <select v-model="materialBlock.materialId">
+                                <option value="">Select Material</option>
+                                <option v-for="material in materials" :key="material.trans_id"
+                                    :value="material.trans_id" :disabled="materialSelected(material.trans_id)">
+                                    {{ material.name }} ({{ material.quantity }} available)
+                                </option>
+                            </select>
+                            <template v-if="materialBlock.materialId != ''">
+                                <input type="number" class="custom-number-input" v-model="materialBlock.quantity"
+                                    :min="0" :max="findMaterialQuantity(materialBlock.materialId)">
+                            </template>
 
-                        </select>
-                        <input type="number" v-model="materialBlock.quantity" :min="0"
-                            :max="findMaterialQuantity(materialBlock.materialId)">
+                            <button type="button" @click="deleteMaterialBlock(materialBlock)" class="remove-button">
+                                <span class="material-icons">remove</span>
+                            </button>
+                        </div>
                     </li>
                 </ul>
-                <button type="button" @click="addMaterialBlock">Add Material</button>
+
             </div>
-            <button @click="addItem" class="add-button" :class="{ 'disabled': isInvalidData }"
+            <template v-if="canAddBlock() == true">
+                <button type="button" @click="addMaterialBlock" class="add-button">
+                    <span class="material-icons">add</span>
+                </button>
+            </template>
+
+            <div style="margin-bottom: 16px; margin-top: 16px;">
+                <h3 class="input-sub-title">Cost</h3>
+                <div style="color: #00a36c; font-weight: 600;"> {{ calculateCost() }} (Eth)</div>
+            </div>
+        </form>
+
+
+        <div class='add-button-container'>
+            <button @click="addProduct" class="add-button" :class="{ 'disabled': isInvalidData }"
                 :disabled="isInvalidData">
                 <span class="material-icons">add</span>
                 <span>Add</span>
             </button>
-        </form>
+        </div>
         <Snackbar ref="snackbarRef" />
     </div>
 
@@ -66,63 +88,79 @@ export default {
             getData(`getAvailableMaterials?log_id=${getAccount().value}`)
                 .then((response) => {
                     materials.value = response.materials || [];
-                    console.log(materials.value.length);
-                    console.log(materials.value);
                 })
                 .catch((error) => {
                     console.error("Error while making Get request:", error);
                 });
         };
         const addMaterialBlock = () => {
-            if (materialBlocks.value.length + 1 <= materials.value.length) {
+            if (canAddBlock() == true) {
                 materialBlocks.value.push({ materialId: '', quantity: 0 });
             }
         };
 
-        const isInvalidData = () => {
-            return product.name === '' || product.quantity <= 0 || product.price <= 0.0; // Checks if quantity is non-positive
+        const deleteMaterialBlock = (block) => {
+            const blockIndex = materialBlocks.value.findIndex(existingBlock => {
+                // Replace with the property used for identification (e.g., block.id, block.index)
+                return existingBlock === block;
+            });
+
+            if (blockIndex !== -1) {
+                materialBlocks.value.splice(blockIndex, 1);
+            }
+        };
+
+        const canAddBlock = () => {
+            return materialBlocks.value.length + 1 <= materials.value.length;
         }
+
+        const isInvalidData = computed(() => {
+            return (
+                product.value.name === '' ||
+                product.value.quantity <= 0 ||
+                product.value.price <= 0.0 || allBlocksHasValidOption() == false
+            );
+        });
+
+        const allBlocksHasValidOption = () => {
+            let valid = true;
+            if (materialBlocks.value.length <= 0) {
+                valid = false;
+                return valid;
+            }
+            else {
+                for (const block of materialBlocks.value) {
+                    if (block.materialId == '') {
+                        valid = false;
+                        return valid;
+                    }
+                }
+            }
+            return valid;
+        }
+
+        const allBlocksHasValidQuantity = () => {
+            let valid = true;
+            for (const block of materialBlocks.value) {
+                if (block.quantity <= 0 || block.quantity > materials.value.find(m => m.trans_id === block.materialId).quantity) {
+                    valid = false;
+                    return valid;
+                }
+            }
+            return valid;
+        }
+
+
 
         const materialSelected = (materialId) => {
             return materialBlocks.value.some(block => block.materialId === materialId);
         };
 
         const addProduct = async () => {
-            // Validate quantities before submission
-            let isValid = true;
-            for (const block of materialBlocks.value) {
-                if (!block.materialId) {
-                    isValid = false;
-                    alert('Please select a material for each block.');
-                    break;
-                }
-                if (block.quantity > materials.value.find(m => m.id === block.materialId).quantity) {
-                    isValid = false;
-                    alert(`Insufficient quantity for ${materials.value.find(m => m.id === block.materialId).name}`);
-                    break;
-                }
-            }
-
-            if (isValid) {
-                // Prepare product data with selected materials and quantities
-                const productData = { ...product.value, materials: [] };
-                for (const block of materialBlocks.value) {
-                    if (block.materialId) {
-                        productData.materials.push({
-                            materialId: block.materialId,
-                            quantity: block.quantity,
-                        });
-                    }
-                }
-
-                // Call your API to add the product
-                // ...
-
-                // Clear form and material blocks after successful submission
-                product.value.name = '';
-                product.value.quantity = 0;
-                product.value.price = 0;
-                materialBlocks.value = [];
+            console.log('fdfd');
+            if (allBlocksHasValidQuantity() == false) {
+                alert('Please enter valid quantity');
+                return;
             }
         };
         const findMaterialQuantity = (materialId) => {
@@ -130,18 +168,34 @@ export default {
             const foundMaterial = materials.value.find(m => m.trans_id === materialId);
             return foundMaterial ? foundMaterial.quantity : 0;
         };
+        const calculateCost = () => {
+            let totalCost = 0;
 
+            for (const block of materialBlocks.value) {
+                const foundMaterial = materials.value.find(m => m.trans_id === block.materialId);
+                totalCost += foundMaterial ? foundMaterial.price * block.quantity : 0;
+            }
+
+            const roundedCostString = totalCost.toFixed(5); // Round to 5 decimal places as string
+            const roundedCost = parseFloat(roundedCostString);
+
+
+            return roundedCost;
+        }
         fetchData(); // Fetch data on component mount
 
         return {
             materials,
             materialBlocks,
+            product,
             addMaterialBlock,
             addProduct,
-            product,
             findMaterialQuantity,
             materialSelected,
-            isInvalidData
+            isInvalidData,
+            canAddBlock,
+            deleteMaterialBlock,
+            calculateCost,
 
 
         };

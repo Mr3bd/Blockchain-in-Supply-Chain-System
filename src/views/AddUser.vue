@@ -1,6 +1,7 @@
 <template>
-   <h1>Add User</h1>
+
    <div class="container">
+      <h2 class="input-title">Add User</h2>
       <div class="input-box">
          <label for="wId">Wallet Id:</label>
          <input id="wId" type="text" placeholder="Enter Id" v-model="wId" />
@@ -15,10 +16,14 @@
          <button @click="openRoleSelection" class="role-button">{{ buttonText }}</button>
 
       </div>
-      <button @click="addUser" class="add-button" :class="{ 'disabled': isInvalidData }" :disabled="isInvalidData">
-         <span class="material-icons">add</span>
-         <span>Add</span>
-      </button>
+
+      <div class='add-button-container'>
+         <button @click="addUser" class="add-button" :class="{ 'disabled': isInvalidData }" :disabled="isInvalidData">
+            <span class="material-icons">add</span>
+            <span>Add</span>
+         </button>
+      </div>
+
 
       <Snackbar ref="snackbarRef" />
       <v-bottom-sheet v-model="showRoleSelectionRef">

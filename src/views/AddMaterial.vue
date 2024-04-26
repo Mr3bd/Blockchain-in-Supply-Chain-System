@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<h2 class="form-title">Add Material</h2>
+		<h2 class="input-title">Add Material</h2>
 		<div class="input-box">
 			<label for="itemName">* Name</label>
 			<input id="itemName" type="text" placeholder="Enter name" v-model="itemName" />
@@ -13,11 +13,14 @@
 			<label for="itemQuantity">* Quantity</label>
 			<input id="itemQuantity" type="number" placeholder="Enter quantity" v-model.number="itemQuantity" />
 		</div>
-		<button @click="addItem" class="add-button" :class="{ 'disabled': isInvalidData }" :disabled="isInvalidData">
-			<span class="material-icons">add</span>
-			<span>Add</span>
-		</button>
 
+		<div class='add-button-container'>
+			<button @click="addItem" class="add-button" :class="{ 'disabled': isInvalidData }"
+				:disabled="isInvalidData">
+				<span class="material-icons">add</span>
+				<span>Add</span>
+			</button>
+		</div>
 		<Snackbar ref="snackbarRef" />
 
 	</div>

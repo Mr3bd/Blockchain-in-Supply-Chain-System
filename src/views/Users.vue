@@ -27,7 +27,8 @@
 
                     <template v-else>
                         <button @click="openRoleSelection(user)" class="role-button">{{ user.role_info.role_name
-                            }}</button> </template>
+                            }}</button>
+                    </template>
                 </td>
 
                 <td>
