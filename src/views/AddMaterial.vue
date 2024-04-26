@@ -1,16 +1,19 @@
 <template>
-	<h1>Add Material</h1>
 	<div class="container">
+		<h2 class="form-title">Add Material</h2>
 		<div class="input-box">
-			<label for="itemName">Name:</label>
+			<label for="itemName">* Name</label>
 			<input id="itemName" type="text" placeholder="Enter name" v-model="itemName" />
 		</div>
 		<div class="input-box">
-			<label for="itemQuantity">Quantity:</label>
+			<label for="itemPrice">* Price (for each one)</label>
+			<input id="itemPrice" type="number" placeholder="Enter price" v-model.number="itemPrice" />
+		</div>
+		<div class="input-box">
+			<label for="itemQuantity">* Quantity</label>
 			<input id="itemQuantity" type="number" placeholder="Enter quantity" v-model.number="itemQuantity" />
 		</div>
-		<button @click="addItem" class="add-button" :class="{ 'disabled': isInvalidQuantity }"
-			:disabled="isInvalidQuantity">
+		<button @click="addItem" class="add-button" :class="{ 'disabled': isInvalidData }" :disabled="isInvalidData">
 			<span class="material-icons">add</span>
 			<span>Add</span>
 		</button>
@@ -31,12 +34,13 @@ export default {
 	data() {
 		return {
 			itemName: '',
-			itemQuantity: 0
+			itemQuantity: 0,
+			itemPrice: 0.0,
 		};
 	},
 	computed: {
-		isInvalidQuantity() {
-			return this.itemQuantity <= 0 || this.itemName === ''; // Checks if quantity is non-positive
+		isInvalidData() {
+			return this.itemName === '' || this.itemQuantity <= 0 || this.itemPrice <= 0.0; // Checks if quantity is non-positive
 		}
 	},
 	components: {
@@ -45,26 +49,29 @@ export default {
 	methods: {
 		addItem: async function () { // Mark the function as async
 
-			if (!this.isInvalidQuantity) {
+			if (!this.isInvalidData) {
 				const web3 = new Web3(window.ethereum);
 
-				const contractAddress = '0xaCCD01B6823823D8734602Eb8Eb6ffDB1e60caf5';
+				const contractAddress = '0xd27AC5189C6C3fAB913A3Ff6048d251E914d42DC';
 				const contract = new web3.eth.Contract(MaterialManagementABI, contractAddress); // Use Web3 from the Web3 library
 
 				console.log(contractAddress);
 				// Proceed with adding the item
+				const priceInWei = web3.utils.toWei((this.itemPrice * 100).toString(), 'ether'); // Convert price to Wei
+
 				try {
 					// Call the addMaterial function of the smart contract
-					const tx = await contract.methods.addMaterial(this.itemName, this.itemQuantity).send({ from: getAccount().value }); // Use accounts[0]
+					const tx = await contract.methods.addMaterial(this.itemName, this.itemQuantity, priceInWei).send({ from: getAccount().value }); // Use accounts[0]
 					const trans_id = tx['transactionHash'];
 					console.log('Adding item:', trans_id);
-
-					await postData("addMaterial", { log_id: getAccount().value, trans_id: trans_id, name: this.itemName, quantity: this.itemQuantity })
+					console.log(priceInWei);
+					await postData("addMaterial", { log_id: getAccount().value, trans_id: trans_id, name: this.itemName, quantity: this.itemQuantity, price: this.itemPrice })
 						.then((response) => {
 
 							if (response.success != null) {
 								this.itemName = '';
-								this.itemQuantity = '';
+								this.itemQuantity = 0;
+								this.itemPrice = 0;
 								this.$refs.snackbarRef.show('The material has been added', 'success', 3000);
 							}
 							else {

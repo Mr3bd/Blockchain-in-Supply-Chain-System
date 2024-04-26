@@ -1,36 +1,36 @@
 <template>
-	<div>
-		<div class="app-header">
-			<h1>Materials</h1>
-			<button @click="goToAddMaterialPage" class="add-button">
-				<span class="material-icons">add</span>
-				<span>Add</span>
-			</button>
-		</div>
-		<table class="app-table">
-			<thead>
-				<tr>
-					<th>Trans ID</th>
-					<th>Name</th>
-					<th>Quantity</th>
-					<th>Logtime</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="material in materials" :key="material.id">
-					<td>{{ truncateTransId(material.trans_id) }}</td>
-					<td>{{ material.name }}</td>
-					<td>{{ material.quantity }}</td>
-					<td>{{ material.logtime }}</td>
-				</tr>
-			</tbody>
-		</table>
-		<div class="pn-buttons-container">
-			<button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
-			<button class='prev-next-btn' @click="nextPage" :disabled="materials.length < 10">Next Page</button>
-
-		</div>
+	<div class="app-header">
+		<h2 class="page-head">Materials</h2>
+		<button @click="goToAddMaterialPage" class="add-button">
+			<span class="material-icons">add</span>
+			<span>Add</span>
+		</button>
 	</div>
+	<table class="app-table">
+		<thead>
+			<tr>
+				<th>Trans ID</th>
+				<th>Name</th>
+				<th>Price</th>
+				<th>Quantity</th>
+				<th>Logtime</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr v-for="material in materials" :key="material.id">
+				<td>{{ truncateTransId(material.trans_id) }}</td>
+				<td>{{ material.name }}</td>
+				<td>{{ material.price }}</td>
+				<td>{{ material.quantity }}</td>
+				<td>{{ material.logtime }}</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="pn-buttons-container">
+		<button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
+		<button class='prev-next-btn' @click="nextPage" :disabled="materials.length < 10">Next Page</button>
+	</div>
+
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 // MaterialManagementABI.js
-
+// 0xd27AC5189C6C3fAB913A3Ff6048d251E914d42DC
 const MaterialManagementABI = [
   {
     inputs: [
@@ -11,6 +11,11 @@ const MaterialManagementABI = [
       {
         internalType: "uint256",
         name: "_quantity",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_price",
         type: "uint256",
       },
     ],
@@ -38,6 +43,12 @@ const MaterialManagementABI = [
         indexed: false,
         internalType: "uint256",
         name: "quantity",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "price",
         type: "uint256",
       },
     ],
@@ -75,6 +86,11 @@ const MaterialManagementABI = [
       {
         internalType: "uint256",
         name: "quantity",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "price",
         type: "uint256",
       },
     ],

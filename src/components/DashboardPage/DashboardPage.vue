@@ -7,7 +7,7 @@ import AppBar from '../AppBar.vue'
 <template>
   <div class="dashboard">
     <!-- App Bar -->
-    <AppBar />
+
 
     <div class="main-content">
       <!-- Sidebar -->
@@ -15,6 +15,7 @@ import AppBar from '../AppBar.vue'
 
       <!-- Content -->
       <div class="content">
+        <AppBar />
         <router-view />
       </div>
     </div>

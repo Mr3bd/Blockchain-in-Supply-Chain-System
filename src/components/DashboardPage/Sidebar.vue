@@ -64,8 +64,8 @@ const ToggleMenu = () => {
 aside {
 	display: flex;
 	flex-direction: column;
-
-	background-color: var(--dark);
+	background: linear-gradient(180deg, #0a2048 0%, #007046 100%);
+	//background-color: var(--dark);
 	color: var(--light);
 
 	width: calc(2rem + 32px);
@@ -160,7 +160,7 @@ aside {
 			}
 
 			&.router-link-exact-active {
-				background-color: var(--dark-alt);
+				background-color: #ffffff17;
 				border-right: 5px solid var(--primary);
 
 				.material-icons,

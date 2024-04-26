@@ -1,7 +1,6 @@
 <template>
-
     <div class="app-header">
-        <h1>Users</h1>
+        <h2 class="page-head">Users</h2>
         <button @click="goToAddUserPage" class="add-button">
             <span class="material-icons">add</span>
             <span>Add</span>
@@ -53,7 +52,7 @@
     </div>
     <Snackbar ref="snackbarRef" />
     <v-bottom-sheet v-model="showRoleSelectionRef">
-        <v-list style="background-color: #1e293b; ">
+        <v-list style="background-color: #34495e; ">
             <v-list-item v-for="role in roles" :key="role.id" @click="selectRole(role.id)">
                 <v-list-item-title style="display: flex; align-items: center; color: white; margin: 12px;">
                     {{ role.name }}
