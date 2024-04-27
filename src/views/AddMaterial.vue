@@ -55,7 +55,7 @@ export default {
 			if (!this.isInvalidData) {
 				const web3 = new Web3(window.ethereum);
 
-				const contractAddress = '0xd27AC5189C6C3fAB913A3Ff6048d251E914d42DC';
+				const contractAddress = '0x18E064b1f997C8db5e514ADF2509cc3769ec0C4e';
 				const contract = new web3.eth.Contract(MaterialManagementABI, contractAddress); // Use Web3 from the Web3 library
 
 				console.log(contractAddress);

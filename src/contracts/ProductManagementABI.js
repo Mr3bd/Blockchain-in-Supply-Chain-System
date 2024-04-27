@@ -1,6 +1,26 @@
-// MaterialManagementABI.js
-// 0x18E064b1f997C8db5e514ADF2509cc3769ec0C4e
-const MaterialManagementABI = [
+// ProductManagementABI.js
+// 0x2bC122cE737f0D73127F25e0fEA500C7341CdbeD
+
+const ProductManagementABI = [
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "PaymentSuccess",
+    type: "event",
+  },
   {
     anonymous: false,
     inputs: [
@@ -29,7 +49,7 @@ const MaterialManagementABI = [
         type: "uint256",
       },
     ],
-    name: "MaterialAdded",
+    name: "ProductAdded",
     type: "event",
   },
   {
@@ -41,18 +61,33 @@ const MaterialManagementABI = [
       },
       {
         internalType: "uint256",
-        name: "_quantity",
+        name: "_price",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "_price",
+        name: "_quantity",
         type: "uint256",
       },
+      {
+        internalType: "uint256[]",
+        name: "_transIds",
+        type: "uint256[]",
+      },
+      {
+        internalType: "address[]",
+        name: "_ownerIds",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "_costs",
+        type: "uint256[]",
+      },
     ],
-    name: "addMaterial",
+    name: "addProduct",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
   {
@@ -69,6 +104,19 @@ const MaterialManagementABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "productCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -76,7 +124,7 @@ const MaterialManagementABI = [
         type: "uint256",
       },
     ],
-    name: "materials",
+    name: "products",
     outputs: [
       {
         internalType: "string",
@@ -85,12 +133,12 @@ const MaterialManagementABI = [
       },
       {
         internalType: "uint256",
-        name: "quantity",
+        name: "price",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "price",
+        name: "quantity",
         type: "uint256",
       },
     ],
@@ -98,4 +146,4 @@ const MaterialManagementABI = [
     type: "function",
   },
 ];
-export default MaterialManagementABI;
+export default ProductManagementABI;

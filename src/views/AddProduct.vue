@@ -69,8 +69,10 @@
 
 <script>
 import { ref, computed } from 'vue';
+import Web3 from 'web3'; // Import Web3 library
 import { getAccount } from "@/web3Service.js" // Import the web3Service.js file
-import { getData } from "@/apiService.js";
+import { getData, postData } from "@/apiService.js";
+import ProductManagementABI from '@/contracts/ProductManagementABI.js';
 import Snackbar from '@/components/Snackbar.vue';
 
 export default {
@@ -157,10 +159,67 @@ export default {
         };
 
         const addProduct = async () => {
-            console.log('fdfd');
             if (allBlocksHasValidQuantity() == false) {
                 alert('Please enter valid quantity');
                 return;
+            }
+
+            else {
+                let cost = 0;
+                let transIds = [];
+                let ownerIds = [];
+                let costs = [];
+                const web3 = new Web3(window.ethereum);
+                const contractAddress = '0x2bC122cE737f0D73127F25e0fEA500C7341CdbeD';
+
+                for (const block of materialBlocks.value) {
+                    const foundMaterial = materials.value.find(m => m.trans_id === block.materialId);
+                    transIds.push(foundMaterial.trans_id);
+                    ownerIds.push(foundMaterial.owner_id);
+                    const costPerBlock = web3.utils.toWei((foundMaterial.price * block.quantity).toString(), 'ether');
+                    costs.push(costPerBlock);
+                }
+                console.log(getAccount().value);
+                console.log(product.value.name);
+                console.log(product.value.price);
+                console.log(product.value.quantity);
+                console.log(transIds);
+                console.log(ownerIds);
+                console.log(costs);
+
+                ownerIds = ownerIds.map(id => web3.utils.toChecksumAddress(id));
+
+                const contract = new web3.eth.Contract(ProductManagementABI, contractAddress);
+                const totalBlockCost = web3.utils.toWei((calculateCost()).toString(), 'ether');
+
+                try {
+                    const priceInWei = web3.utils.toWei((product.value.price).toString(), 'ether'); // Convert price to Wei
+
+                    const tx = await contract.methods.addProduct(
+                        product.value.name,
+                        priceInWei,
+                        product.value.quantity,
+                        transIds,
+                        ownerIds,
+                        costs
+                    ).send({ from: getAccount().value, value: totalBlockCost });
+
+                    const trans_id = tx['transactionHash'];
+                    console.log('Adding product:', trans_id);
+
+                    // await postData("addProduct", {
+                    //     log_id: getAccount().value,
+                    //     trans_id: trans_id,
+                    //     name: this.productName,
+                    //     price: this.productPrice,
+                    //     quantity: this.productQuantity
+                    // });
+
+                    // this.$refs.snackbarRef.show('The product has been added', 'success', 3000);
+                } catch (error) {
+                    console.error(error);
+                    // this.$refs.snackbarRef.show('Error adding product', 'error', 3000);
+                }
             }
         };
         const findMaterialQuantity = (materialId) => {
