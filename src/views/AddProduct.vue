@@ -207,13 +207,25 @@ export default {
                     const trans_id = tx['transactionHash'];
                     console.log('Adding product:', trans_id);
 
-                    // await postData("addProduct", {
-                    //     log_id: getAccount().value,
-                    //     trans_id: trans_id,
-                    //     name: this.productName,
-                    //     price: this.productPrice,
-                    //     quantity: this.productQuantity
-                    // });
+                    await postData("addProduct", { log_id: getAccount().value, trans_id: trans_id, name: product.value.name, quantity: product.value.quantity, price: product.value.price })
+                        .then((response) => {
+
+                            if (response.success != null) {
+                                console.log('success django');
+
+                                // this.$refs.snackbarRef.show('The material has been added', 'success', 3000);
+                            }
+                            else {
+                                console.log('failed django');
+
+                                // this.$refs.snackbarRef.show('Error adding material', 'error', 3000);
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+
+                            // this.$refs.snackbarRef.show('Error adding material', 'error', 3000);
+                        });
 
                     // this.$refs.snackbarRef.show('The product has been added', 'success', 3000);
                 } catch (error) {
