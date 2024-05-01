@@ -68,7 +68,7 @@
 
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import Web3 from 'web3'; // Import Web3 library
 import { getAccount } from "@/web3Service.js" // Import the web3Service.js file
 import { getData, postData } from "@/apiService.js";
@@ -77,6 +77,8 @@ import Snackbar from '@/components/Snackbar.vue';
 
 export default {
     setup() {
+        const snackbarRef = ref(null);
+
         const product = ref({
             name: '',
             quantity: 0,
@@ -165,28 +167,27 @@ export default {
             }
 
             else {
-                let cost = 0;
-                let transIds = [];
+                let matIds = [];
                 let ownerIds = [];
                 let costs = [];
-                const web3 = new Web3(window.ethereum);
-                const contractAddress = '0x2bC122cE737f0D73127F25e0fEA500C7341CdbeD';
+                let qts = []
+                let materials_json = []
+                const web3 = new Web3(window.ethereum); 
+                const contractAddress = '0xf0B650844b04AD514923ee16C195b499F6A3ae99';
 
                 for (const block of materialBlocks.value) {
                     const foundMaterial = materials.value.find(m => m.trans_id === block.materialId);
-                    transIds.push(foundMaterial.trans_id);
+                    matIds.push(foundMaterial.material_id);
                     ownerIds.push(foundMaterial.owner_id);
                     const costPerBlock = web3.utils.toWei((foundMaterial.price * block.quantity).toString(), 'ether');
                     costs.push(costPerBlock);
+                    qts.push(block.quantity)
+                    const mat = {
+                        id: foundMaterial.trans_id,
+                        quantity: block.quantity
+                    };
+                    materials_json.push(mat)
                 }
-                console.log(getAccount().value);
-                console.log(product.value.name);
-                console.log(product.value.price);
-                console.log(product.value.quantity);
-                console.log(transIds);
-                console.log(ownerIds);
-                console.log(costs);
-
                 ownerIds = ownerIds.map(id => web3.utils.toChecksumAddress(id));
 
                 const contract = new web3.eth.Contract(ProductManagementABI, contractAddress);
@@ -199,38 +200,52 @@ export default {
                         product.value.name,
                         priceInWei,
                         product.value.quantity,
-                        transIds,
+                        4,
+                        matIds,
                         ownerIds,
-                        costs
+                        costs,
+                        qts
                     ).send({ from: getAccount().value, value: totalBlockCost });
-
                     const trans_id = tx['transactionHash'];
-                    console.log('Adding product:', trans_id);
+                    const productId = tx.events.ProductAdded.returnValues.productId.toString();
 
-                    await postData("addProduct", { log_id: getAccount().value, trans_id: trans_id, name: product.value.name, quantity: product.value.quantity, price: product.value.price })
-                        .then((response) => {
+
+                    await postData("addProduct", {
+                        log_id: getAccount().value,
+                        trans_id: trans_id,
+                        product_id: productId,
+                        name: product.value.name,
+                        quantity: product.value.quantity,
+                        price: product.value.price,
+                        material_ids: JSON.stringify(materials_json)
+                    }).then((response) => {
 
                             if (response.success != null) {
                                 console.log('success django');
-
-                                // this.$refs.snackbarRef.show('The material has been added', 'success', 3000);
+                                materialBlocks.value = [];
+                                materials.value = [];
+                                product.value = {
+                                    name: '',
+                                    quantity: 0,
+                                    price: 0,
+                                };
+                                snackbarRef.value.show('The product has been added', 'success', 3000);
                             }
                             else {
                                 console.log('failed django');
 
-                                // this.$refs.snackbarRef.show('Error adding material', 'error', 3000);
+                                snackbarRef.value.show('Error adding product', 'error', 3000);
                             }
                         })
                         .catch((error) => {
                             console.log(error);
 
-                            // this.$refs.snackbarRef.show('Error adding material', 'error', 3000);
+                            snackbarRef.value.show('Error adding product', 'error', 3000);
                         });
 
-                    // this.$refs.snackbarRef.show('The product has been added', 'success', 3000);
                 } catch (error) {
                     console.error(error);
-                    // this.$refs.snackbarRef.show('Error adding product', 'error', 3000);
+                    snackbarRef.value.show('Error adding product', 'error', 3000);
                 }
             }
         };
@@ -254,7 +269,10 @@ export default {
             return roundedCost;
         }
         fetchData(); // Fetch data on component mount
-
+        onMounted(() => {
+            // Ensure that snackbarRef is populated after the component is mounted
+            snackbarRef.value = snackbarRef;
+        });
         return {
             materials,
             materialBlocks,
@@ -267,6 +285,7 @@ export default {
             canAddBlock,
             deleteMaterialBlock,
             calculateCost,
+            snackbarRef,
 
 
         };

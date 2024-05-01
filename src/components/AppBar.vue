@@ -4,12 +4,18 @@
             <img alt="BSC Logo" src="@/assets/logo.svg" width="96" />
             <h2 class="green">BSC</h2>
         </div>
-        <p :title="user.id" class="role">{{ user.name }} ({{ user.role_info.role_name }})</p>
+        <p :title="user.id" class="role">
+            {{ user.name }} ({{ user.role_info.role_name }}) - 
+            <span style="color: #00a36c; font-weight: 600;">{{ accountBalance }} ETH</span>
+        </p>
     </header>
 </template>
 
 <script setup>
-import { user } from '@/globalVariables';
+
+import { user, accountBalance } from '@/globalVariables';
+
+
 </script>
 
 <style scoped>

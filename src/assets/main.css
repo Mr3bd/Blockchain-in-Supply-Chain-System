@@ -37,6 +37,7 @@ a,
   color: var(--vt-c-primary);
   transition: 0.4s;
   padding: 3px;
+  font-weight: 600;
 }
 
 @media (hover: hover) {
@@ -256,6 +257,7 @@ a,
   padding: 4px;
 }
 
+
 .activate-button {
   background-color: #00a36c36;
   color: #00a36c;
@@ -263,6 +265,56 @@ a,
   padding: 4px;
 }
 
+.in-stock{
+    background-color: #2ecc7136;
+    color: #2ecc71;
+    border-radius: 5px;
+    padding: 4px;
+}
+.out-of-stock {
+  background-color: #e74c3c36;
+  color: #e74c3c;
+  border-radius: 5px;
+  padding: 4px;
+}
+.qa-issue{
+  background-color: #f39c1236;
+    color: #f39c12;
+    border-radius: 5px;
+    padding: 4px;
+}
+.in-production {
+  background-color: #3498db36;
+  color: #3498db;
+  border-radius: 5px;
+  padding: 4px;
+}
+.packaging {
+  background-color: #9b59b636;
+  color: #9b59b6;
+  border-radius: 5px;
+  padding: 4px;
+}
+
+.out-for-delivery {
+  background-color: #2980b936;
+  color: #2980b9;
+  border-radius: 5px;
+  padding: 4px;
+}
+.delivered {
+  background-color: #27ae6036;
+  color: #27ae60;
+  border-radius: 5px;
+  padding: 4px;
+}
+
+.default-status {
+  background-color: #f39c1236;
+  color: #f39c12;
+  border-radius: 5px;
+  padding: 4px;
+}
 select {
   border-radius: 4px;
   color: #00a36c;

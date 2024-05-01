@@ -11,7 +11,7 @@
 			<tr>
 				<th>Trans ID</th>
 				<th>Name</th>
-				<th>Price</th>
+				<th>Price (ETH)</th>
 				<th>Quantity</th>
 				<th>Logtime</th>
 			</tr>
@@ -21,7 +21,7 @@
 				<td>{{ truncateTransId(material.trans_id) }}</td>
 				<td>{{ material.name }}</td>
 				<td>{{ material.price }}</td>
-				<td>{{ material.quantity }}</td>
+				<td>{{ material.quantity }}x</td>
 				<td>{{ material.logtime }}</td>
 			</tr>
 		</tbody>
@@ -30,7 +30,7 @@
 		<button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
 		<button class='prev-next-btn' @click="nextPage" :disabled="materials.length < 10">Next Page</button>
 	</div>
-
+	
 </template>
 
 <script>

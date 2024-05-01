@@ -3,7 +3,7 @@ import Web3 from "web3";
 import { ref } from "vue";
 import router from "./router"; // Import the Vue Router instance
 import { postData } from "./apiService.js";
-import { user } from "@/globalVariables";
+import { user, accountBalance } from "@/globalVariables";
 
 let web3;
 let accounts;
@@ -17,6 +17,7 @@ const handleAccountsChanged = (newAccounts) => {
     } else {
       accounts = newAccounts;
       account.value = accounts[0];
+      set_balance();
       login();
     }
   } else {
@@ -29,7 +30,7 @@ export const initWeb3 = async () => {
   if (window.ethereum) {
     web3 = new Web3(window.ethereum);
     accounts = await web3.eth.getAccounts();
-
+  
     if (accounts != null) {
       if (accounts.length == 0) {
         accounts = null;
@@ -72,7 +73,7 @@ export const login = async () => {
   check_login();
 };
 
-export const check_login = async (next) => {
+export const check_login = async () => {
   postData("login", { id: account.value })
     .then((response) => {
       console.log(response);
@@ -92,3 +93,12 @@ export const check_login = async (next) => {
       logout();
     });
 };
+
+export const set_balance = async () => {
+  const balanceInWei = await web3.eth.getBalance(getAccount().value);
+  const balanceInEther = web3.utils.fromWei(balanceInWei, "ether");
+  const roundedBalance = parseFloat(balanceInEther).toFixed(4); 
+  accountBalance.value = roundedBalance;
+};
+
+

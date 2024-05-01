@@ -1,5 +1,5 @@
 // MaterialManagementABI.js
-// 0x18E064b1f997C8db5e514ADF2509cc3769ec0C4e
+// 0x0935A0F5658Ab6f62DD5C17C38403bAECb529E9D
 const MaterialManagementABI = [
   {
     anonymous: false,
@@ -7,7 +7,7 @@ const MaterialManagementABI = [
       {
         indexed: true,
         internalType: "uint256",
-        name: "id",
+        name: "materialId",
         type: "uint256",
       },
       {
@@ -51,7 +51,13 @@ const MaterialManagementABI = [
       },
     ],
     name: "addMaterial",
-    outputs: [],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -95,6 +101,24 @@ const MaterialManagementABI = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_materialId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_qts",
+        type: "uint256",
+      },
+    ],
+    name: "updateMaterialQuantity",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

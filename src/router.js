@@ -1,15 +1,16 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginPage from "./components/LoginPage/LoginPage.vue";
 import DashboardPage from "./components/DashboardPage/DashboardPage.vue";
-import { getAccount, getAccounts, logout } from "./web3Service";
+import { getAccount, set_balance, logout } from "./web3Service";
 import { postData } from "./apiService.js";
-import { user } from "@/globalVariables";
+import { user, accountBalance } from "@/globalVariables";
 import AddMaterial from "./views/AddMaterial.vue";
 import Materials from "./views/Materials.vue";
 import AddUser from "./views/AddUser.vue";
 import Users from "./views/Users.vue";
 import Products from "./views/Products.vue";
 import AddProduct from "./views/AddProduct.vue";
+import QARequests from "./views/QARequests.vue";
 
 const routes = [
   { path: "/", redirect: "/dashboard" }, // Redirect root path to '/dashboard'
@@ -25,6 +26,7 @@ const routes = [
       { path: "adduser", component: AddUser },
       { path: "products", component: Products },
       { path: "addproduct", component: AddProduct },
+      { path: "qarequests", component: QARequests },
     ],
   },
 ];
@@ -38,7 +40,10 @@ router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
   console.log("Reouter => Account: " + getAccount().value);
-
+  if (accountBalance.value == null) {
+    set_balance();
+  }
+  console.log();
   if (requiresAuth && !isAuthenticated) {
     // If authentication is required but user is not authenticated,
     // redirect to the login page

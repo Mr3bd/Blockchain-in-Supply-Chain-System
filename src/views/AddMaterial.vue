@@ -55,7 +55,7 @@ export default {
 			if (!this.isInvalidData) {
 				const web3 = new Web3(window.ethereum);
 
-				const contractAddress = '0x18E064b1f997C8db5e514ADF2509cc3769ec0C4e';
+				const contractAddress = '0x0935A0F5658Ab6f62DD5C17C38403bAECb529E9D';
 				const contract = new web3.eth.Contract(MaterialManagementABI, contractAddress); // Use Web3 from the Web3 library
 
 				console.log(contractAddress);
@@ -66,9 +66,16 @@ export default {
 					// Call the addMaterial function of the smart contract
 					const tx = await contract.methods.addMaterial(this.itemName, this.itemQuantity, priceInWei).send({ from: getAccount().value }); // Use accounts[0]
 					const trans_id = tx['transactionHash'];
-					console.log('Adding item:', trans_id);
-					console.log(priceInWei);
-					await postData("addMaterial", { log_id: getAccount().value, trans_id: trans_id, name: this.itemName, quantity: this.itemQuantity, price: this.itemPrice })
+					const materialId = tx.events.MaterialAdded.returnValues.materialId.toString();
+
+					await postData("addMaterial", {
+						log_id: getAccount().value,
+						trans_id: trans_id,
+						name: this.itemName,
+						quantity: this.itemQuantity,
+						price: this.itemPrice,
+						material_id: materialId
+					})
 						.then((response) => {
 
 							if (response.success != null) {

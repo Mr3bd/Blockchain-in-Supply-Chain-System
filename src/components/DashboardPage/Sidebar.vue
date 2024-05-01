@@ -10,19 +10,22 @@
 
 		<h3>Menu</h3>
 		<div class="menu">
-
-			<router-link to="/dashboard/products" class="button">
-				<span class="material-icons">inventory_2</span>
-				<span class="text">Products</span>
+			<router-link to="/dashboard/users" class="button">
+				<span class="material-icons">group</span>
+				<span class="text">Users</span>
 			</router-link>
 			<router-link to="/dashboard/materials" class="button">
 				<span class="material-icons">list</span>
 				<span class="text">Materials</span>
 			</router-link>
+			<router-link to="/dashboard/products" class="button">
+				<span class="material-icons">inventory_2</span>
+				<span class="text">Products</span>
+			</router-link>
 
-			<router-link to="/dashboard/Users" class="button">
-				<span class="material-icons">group</span>
-				<span class="text">Users</span>
+			<router-link to="/dashboard/qarequests" class="button">
+				<span class="material-icons">receipt_long</span>
+				<span class="text">QA Requests</span>
 			</router-link>
 			<!-- <router-link to="/addproduct" class="button">
 				<span class="material-icons">description</span>
