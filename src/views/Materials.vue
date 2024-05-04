@@ -28,22 +28,21 @@
 	</table>
 	<div class="pn-buttons-container">
 		<button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
-		<button class='prev-next-btn' @click="nextPage" :disabled="materials.length < 10">Next Page</button>
+		<button class='prev-next-btn' @click="nextPage" :disabled="materials.length < pageSize">Next Page</button>
 	</div>
-	
+
 </template>
 
 <script>
 import { ref } from 'vue';
 import { getAccount } from "@/web3Service.js" // Import the web3Service.js file
 import router from "@/router.js"; // Import the Vue Router instance
-import { getData } from "@/apiService.js";
+import { getData, pageSize } from "@/apiService.js";
 export default {
 	setup() {
 		const materials = ref([]);
 		let currentPage = ref(1);
-		const pageSize = 10; // Change this according to your page size
-
+		
 		const fetchData = async () => {
 			getData(`getMaterials?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
 				.then((response) => {
@@ -82,7 +81,7 @@ export default {
 	data() {
 		return {
 			truncateTransId: function (transId) {
-				return transId.slice(0, 24) + '...';
+				return transId.slice(0, 12) + '...';
 			}
 		};
 	}

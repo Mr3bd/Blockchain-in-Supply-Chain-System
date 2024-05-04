@@ -1,5 +1,6 @@
 // MaterialManagementABI.js
-// 0x0935A0F5658Ab6f62DD5C17C38403bAECb529E9D
+const materialContractAddress = "0x640B9E19547f7de5F2f857Be7a098C2ff08260b3";
+
 const MaterialManagementABI = [
   {
     anonymous: false,
@@ -30,6 +31,25 @@ const MaterialManagementABI = [
       },
     ],
     name: "MaterialAdded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "materialId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "quantity",
+        type: "uint256",
+      },
+    ],
+    name: "QuantityUpdated",
     type: "event",
   },
   {
@@ -116,10 +136,10 @@ const MaterialManagementABI = [
         type: "uint256",
       },
     ],
-    name: "updateMaterialQuantity",
+    name: "setQuantity",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
 ];
-export default MaterialManagementABI;
+export { MaterialManagementABI, materialContractAddress };

@@ -185,6 +185,7 @@ a,
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
+  margin-top: 20px;
 }
 
 /* Disabled button */
@@ -192,6 +193,7 @@ a,
   background-color: #64748b1c;
   color: #2C3E50;
   cursor: not-allowed;
+  margin-top: 20px;
 }
 
 .pn-buttons-container {
@@ -220,6 +222,12 @@ a,
 }
 
 .app-table th {
+  font-size: 12px;
+}
+.app-table td{
+  font-size: 12px;
+}
+.app-table th {
   background-color: var(--vt-c-primary);
   color: white;
   font-weight: bold;
@@ -227,7 +235,7 @@ a,
 }
 
 .app-table tbody tr td {
-  padding: 16px;
+  padding: 14px;
   text-align: left;
   border-bottom: 1px solid #e0e0e0;
   color: #5d5d5d;
@@ -289,7 +297,7 @@ a,
   border-radius: 5px;
   padding: 4px;
 }
-.packaging {
+.packaging, .in-review{
   background-color: #9b59b636;
   color: #9b59b6;
   border-radius: 5px;
@@ -305,6 +313,13 @@ a,
 .delivered {
   background-color: #27ae6036;
   color: #27ae60;
+  border-radius: 5px;
+  padding: 4px;
+}
+
+.wait-review{
+  background-color: #f39c1236;
+  color: #f39c12;
   border-radius: 5px;
   padding: 4px;
 }
@@ -338,4 +353,53 @@ option:disabled {
   border-radius: 5px;
   font-weight: 700;
   padding: 4px;
+}
+
+
+/* Style radio buttons */
+.radio-container input[type="radio"] {
+  margin-right: 5px;
+  /* Adjust spacing between radio button and label */
+}
+
+/* Style selected radio button */
+.radio-container input[type="radio"]:checked+label {
+  color: var(--primary);
+  /* Change color of label when radio button is checked */
+}
+
+/* Customize radio button appearance */
+.radio-container input[type="radio"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--primary);
+  /* Change border color */
+  border-radius: 50%;
+  /* Make it round */
+  outline: none;
+  margin-right: 5px;
+  /* Adjust spacing between radio button and label */
+}
+
+/* Customize radio button appearance when selected */
+.radio-container input[type="radio"]:checked {
+  background-color: var(--primary);
+  /* Change background color when selected */
+}
+
+.radio-container label {
+  display: block;
+  /* Display labels in a block */
+  margin-bottom: 10px;
+  /* Add spacing between radio buttons */
+}
+
+.copyright {
+  text-align: center;
+  margin-top: 32px;
+  color: var(--grey);
+  font-size: 14px;
 }

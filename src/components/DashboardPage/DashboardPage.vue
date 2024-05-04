@@ -1,7 +1,7 @@
 <script setup>
 import Sidebar from './Sidebar.vue'
 import AppBar from '../AppBar.vue'
-
+import CustomParticles from '../LoginPage/Particles.vue'
 </script>
 
 <template>
@@ -12,13 +12,18 @@ import AppBar from '../AppBar.vue'
     <div class="main-content">
       <!-- Sidebar -->
       <Sidebar />
-
+      <CustomParticles :backgroundColor="'#f4f7fa'" :numberOfParts=10 :numberClick=0 />
       <!-- Content -->
       <div class="content">
         <AppBar />
         <router-view />
+        <div class="copyright">
+          <p>Powered by <a href="https://www.psut.edu.jo/" target="_blank">PSUT</a></p>
+        </div>
       </div>
+
     </div>
+
   </div>
 </template>
 <style lang="scss">

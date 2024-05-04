@@ -1,83 +1,17 @@
 // ProductManagementABI.js
-// 0xf0B650844b04AD514923ee16C195b499F6A3ae99
+const productContractAddress = "0x17413a8349cf41FcA5440d136888C5bC679655aA";
 
 const ProductManagementABI = [
   {
     inputs: [
       {
-        internalType: "string",
-        name: "_name",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "_price",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_quantity",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_status",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256[]",
-        name: "_transIds",
-        type: "uint256[]",
-      },
-      {
-        internalType: "address[]",
-        name: "_ownerIds",
-        type: "address[]",
-      },
-      {
-        internalType: "uint256[]",
-        name: "_costs",
-        type: "uint256[]",
-      },
-    ],
-    name: "addProduct",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_productId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_newStatus",
-        type: "uint256",
-      },
-      {
         internalType: "address",
-        name: "qaId",
+        name: "_materialContractAddress",
         type: "address",
       },
-      {
-        internalType: "uint256",
-        name: "cost",
-        type: "uint256",
-      },
     ],
-    name: "changeProductStatus",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
+    stateMutability: "nonpayable",
+    type: "constructor",
   },
   {
     anonymous: false,
@@ -117,32 +51,85 @@ const ProductManagementABI = [
     type: "event",
   },
   {
-    anonymous: false,
     inputs: [
       {
-        indexed: true,
+        internalType: "string",
+        name: "_name",
+        type: "string",
+      },
+      {
         internalType: "uint256",
-        name: "productId",
+        name: "_price",
         type: "uint256",
       },
       {
-        indexed: false,
         internalType: "uint256",
-        name: "status",
+        name: "_quantity",
         type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "_status",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256[]",
+        name: "_matIds",
+        type: "uint256[]",
+      },
+      {
+        internalType: "address[]",
+        name: "_ownerIds",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "_costs",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "_qts",
+        type: "uint256[]",
+      },
     ],
-    name: "ProductStatusChanged",
-    type: "event",
-  },
-  {
-    inputs: [],
-    name: "materialCount",
+    name: "addProduct",
     outputs: [
       {
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "productId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "newStatus",
+        type: "uint256",
+      },
+    ],
+    name: "changeProductStatus",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "materialContract",
+    outputs: [
+      {
+        internalType: "contract MaterialManagement",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -196,4 +183,5 @@ const ProductManagementABI = [
     type: "function",
   },
 ];
-export default ProductManagementABI;
+export { ProductManagementABI, productContractAddress };
+

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import HelloWorld from './HelloWorld.vue'
-import TheWelcome from './TheWelcome.vue'
 import LoginForm from './LoginForm.vue'
 import CustomParticles from './Particles.vue'
 </script>
@@ -17,7 +16,7 @@ import CustomParticles from './Particles.vue'
 
     <main>
       <LoginForm />
-      <CustomParticles />
+      <CustomParticles :backgroundColor="'#10151a'" />
     </main>
 
     <footer>

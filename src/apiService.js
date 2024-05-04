@@ -1,5 +1,6 @@
 const base_url = "http://127.0.0.1:8000/api"; // Your base API URL
 
+export const pageSize = 6; 
 export const postData = async (endpoint, data) => {
   console.log(`${base_url}/${endpoint}`);
   try {

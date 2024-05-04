@@ -14,13 +14,27 @@ import { loadSlim } from "tsparticles-slim"; // loads tsparticles-slim
 //import { loadFull } from "tsparticles"; // loads tsparticles
 
 export default {
+  props: {
+    backgroundColor: {
+      type: String,
+      required: true
+    },
+    numberOfParts: {
+      type: Number,
+      default: 100
+    },
+    numberClick: {
+      type: Number,
+      default:  5
+    },
+  },
   data() {
     return {
       // using an empty options object will load the default options, which are static particles with no background and 3px radius, opacity 100%, white color
       // all options can be found here: https://particles.js.org/docs/interfaces/Options_Interfaces_IOptions.IOptions.html
       options: {
         background: {
-          color: "#10151a", // this sets a background color for the canvas
+          color: this.backgroundColor, // this sets a background color for the canvas
         },
         fullScreen: {
           enable: true, // enabling this will make the canvas fill the entire screen, it's enabled by default
@@ -39,7 +53,7 @@ export default {
           },
           modes: {
             push: {
-              quantity: 10, // number of particles to add on click
+              quantity: this.numberClick, // number of particles to add on click
             },
             repulse: {
               distance: 300, // distance of the particles from the cursor
@@ -57,7 +71,7 @@ export default {
             speed: { min: 1, max: 5 }, // using a range in speed value will make particles move in a random speed between min/max values, each particle has its own value, it won't change over time by default
           },
           number: {
-            value: 100,
+            value: this.numberOfParts,
           },
           opacity: {
             value: { min: 0.3, max: 0.7 }, // using a different opacity, to have some semitransparent effects

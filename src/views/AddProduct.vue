@@ -70,9 +70,9 @@
 <script>
 import { ref, computed, onMounted } from 'vue';
 import Web3 from 'web3'; // Import Web3 library
-import { getAccount } from "@/web3Service.js" // Import the web3Service.js file
+import { getAccount, set_balance } from "@/web3Service.js" // Import the web3Service.js file
 import { getData, postData } from "@/apiService.js";
-import ProductManagementABI from '@/contracts/ProductManagementABI.js';
+import { ProductManagementABI, productContractAddress } from '@/contracts/ProductManagementABI.js';
 import Snackbar from '@/components/Snackbar.vue';
 
 export default {
@@ -173,7 +173,7 @@ export default {
                 let qts = []
                 let materials_json = []
                 const web3 = new Web3(window.ethereum); 
-                const contractAddress = '0xf0B650844b04AD514923ee16C195b499F6A3ae99';
+                const contractAddress = productContractAddress;
 
                 for (const block of materialBlocks.value) {
                     const foundMaterial = materials.value.find(m => m.trans_id === block.materialId);
@@ -205,9 +205,11 @@ export default {
                         ownerIds,
                         costs,
                         qts
-                    ).send({ from: getAccount().value, value: totalBlockCost });
+                    ).send({
+                        from: getAccount().value, value: totalBlockCost });
                     const trans_id = tx['transactionHash'];
                     const productId = tx.events.ProductAdded.returnValues.productId.toString();
+                    set_balance();
 
 
                     await postData("addProduct", {

@@ -8,7 +8,7 @@
 			</button>
 		</div>
 
-		<h3>Menu</h3>
+		<h3 style="font-weight: 600; color: #00a36c;">Menu</h3>
 		<div class="menu">
 			<router-link to="/dashboard/users" class="button">
 				<span class="material-icons">group</span>
@@ -26,6 +26,10 @@
 			<router-link to="/dashboard/qarequests" class="button">
 				<span class="material-icons">receipt_long</span>
 				<span class="text">QA Requests</span>
+			</router-link>
+			<router-link to="/dashboard/store" class="button">
+				<span class="material-icons">local_mall</span>
+				<span class="text">Store</span>
 			</router-link>
 			<!-- <router-link to="/addproduct" class="button">
 				<span class="material-icons">description</span>

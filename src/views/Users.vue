@@ -48,14 +48,14 @@
     </table>
     <div class="pn-buttons-container">
         <button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
-        <button class='prev-next-btn' @click="nextPage" :disabled="users.length < 10">Next Page</button>
+        <button class='prev-next-btn' @click="nextPage" :disabled="users.length < pageSize">Next Page</button>
 
     </div>
     <Snackbar ref="snackbarRef" />
     <v-bottom-sheet v-model="showRoleSelectionRef">
-        <v-list style="background-color: #34495e; ">
+        <v-list style="background-color: #f4f7fa; ">
             <v-list-item v-for="role in roles" :key="role.id" @click="selectRole(role.id)">
-                <v-list-item-title style="display: flex; align-items: center; color: white; margin: 12px;">
+                <v-list-item-title style="display: flex; align-items: center; color: #2C3E50; margin: 12px;">
                     {{ role.name }}
                     <span v-if="role.id === selectedRoleId" class="material-icons"
                         style="margin-left: 8px; color: #00a36c;">check</span>
@@ -74,7 +74,7 @@
 import { ref } from 'vue';
 import { getAccount } from "@/web3Service.js";
 import router from "@/router.js";
-import { getData, postData } from "@/apiService.js";
+import { getData, postData, pageSize } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 import { reactive } from 'vue';
 
@@ -82,7 +82,6 @@ export default {
     setup() {
         const users = ref([]);
         const currentPage = ref(1);
-        const pageSize = 10;
         const snackbarRef = ref(null);
         const roles = ref([]);
         const selectedUser = reactive({}); // To keep track of the selected user

@@ -11,6 +11,7 @@ import Users from "./views/Users.vue";
 import Products from "./views/Products.vue";
 import AddProduct from "./views/AddProduct.vue";
 import QARequests from "./views/QARequests.vue";
+import Store from "./views/Store.vue";
 
 const routes = [
   { path: "/", redirect: "/dashboard" }, // Redirect root path to '/dashboard'
@@ -27,6 +28,7 @@ const routes = [
       { path: "products", component: Products },
       { path: "addproduct", component: AddProduct },
       { path: "qarequests", component: QARequests },
+      { path: "store", component: Store },
     ],
   },
 ];

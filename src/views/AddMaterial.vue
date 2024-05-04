@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import { getAccount } from "@/web3Service.js" // Import the web3Service.js file
+import { getAccount, set_balance } from "@/web3Service.js" // Import the web3Service.js file
 import Web3 from 'web3'; // Import Web3 library
-import MaterialManagementABI from '@/contracts/MaterialManagementABI.js';
+import { MaterialManagementABI, materialContractAddress } from '@/contracts/MaterialManagementABI.js';
 import { postData } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 
@@ -55,7 +55,7 @@ export default {
 			if (!this.isInvalidData) {
 				const web3 = new Web3(window.ethereum);
 
-				const contractAddress = '0x0935A0F5658Ab6f62DD5C17C38403bAECb529E9D';
+				const contractAddress = materialContractAddress;
 				const contract = new web3.eth.Contract(MaterialManagementABI, contractAddress); // Use Web3 from the Web3 library
 
 				console.log(contractAddress);
@@ -67,6 +67,7 @@ export default {
 					const tx = await contract.methods.addMaterial(this.itemName, this.itemQuantity, priceInWei).send({ from: getAccount().value }); // Use accounts[0]
 					const trans_id = tx['transactionHash'];
 					const materialId = tx.events.MaterialAdded.returnValues.materialId.toString();
+					set_balance();
 
 					await postData("addMaterial", {
 						log_id: getAccount().value,
