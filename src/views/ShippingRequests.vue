@@ -1,7 +1,7 @@
 <template>
 
     <div class="app-header">
-        <h2 class="page-head">QA Requests</h2>
+        <h2 class="page-head">Shipping Requests</h2>
 
     </div>
     <table class="app-table">
@@ -9,7 +9,7 @@
             <tr>
                 <th>Trans ID</th>
                 <th>Product Name</th>
-                <th>Batch ID</th>
+                <th>Shipment ID</th>
                 <th>Reward 🎉 (ETH)</th>
                 <th>Status</th>
                 <th>Logtime</th>
@@ -19,26 +19,32 @@
         <tbody>
             <tr v-for="request in requests" :key="request.trans_id">
                 <td>{{ truncateTransId(request.trans_id) }}</td>
-                <td>{{ request.product_info.name }}</td>
-                <td>{{ request.product_info.batch_id }}</td>
-                <td>{{ request.reward }}</td>
+                <td>{{ request.order_info.product_name }}</td>
+                <td>
+                    <template v-if="request.order_info.shipment_id === null">
+                        N/A
+                    </template>
 
+                    <template v-else>
+                        {{ request.order_info.shipment_id }}
+                    </template>
+
+                </td>
+                <td>{{ request.reward }}</td>
                 <td>
                     <button @click="" :class="getStatusColorClass(request.status_info.status_id)">{{
                         request.status_info.status_name }}</button>
                 </td>
                 <td>{{ request.logtime }}</td>
-
                 <td>
                     <template v-if="request.status === 1">
-                        <button @click="acceptRequest(request.trans_id)" class="delivered">Accept</button>
+                        <button @click="acceptRequest(request)" class="delivered">Accept</button>
                     </template>
-                    <template v-else-if="request.status === 2 && request.qa === getAccount().value">
-                        <button @click="showDialog(request.trans_id)" class="activate-button">Complete</button>
+                    <template v-else-if="request.status === 2 && request.lg === getAccount().value">
+                        <button @click="completeRequest(request)" class="activate-button">Delivered</button>
                     </template>
 
                     <template v-else>
-                        
                     </template>
                 </td>
             </tr>
@@ -50,29 +56,6 @@
 
     </div>
 
-    <v-dialog v-model="isDialogVisible" max-width="500">
-        <v-card color="#34495e">
-            <v-card-title>
-                QA Process Result 📃
-            </v-card-title>
-            <v-card-text>
-                <div class="radio-container">
-                    <label>
-                        <input type="radio" v-model="selectedResult" value="pass">
-                        Pass
-                    </label>
-                    <label>
-                        <input type="radio" v-model="selectedResult" value="fail">
-                        Fail
-                    </label>
-                </div>
-            </v-card-text>
-            <v-card-actions>
-                <v-btn color="#f39c12" @click="completeRequest">Send</v-btn>
-                <v-btn color="#ff1818" @click="closeDialog">Close</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
     <Snackbar ref="snackbarRef" />
 </template>
 
@@ -82,7 +65,7 @@ import { ref, onMounted } from 'vue';
 import { getAccount, set_balance } from "@/web3Service.js" // Import the web3Service.js file
 import { getData, postData, pageSize } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
-import { QaManagementABI, qaContractAddress } from '@/contracts/QaManagementABI.js';
+import { ShippingManagementABI, shippingContractAddress } from '@/contracts/ShippingManagementABI.js';
 import Web3 from 'web3'; // Import Web3 library
 
 export default {
@@ -90,21 +73,9 @@ export default {
         const snackbarRef = ref(null);
         const requests = ref([]);
         let currentPage = ref(1);
-        const isDialogVisible = ref(false);
-        const selectedResult = ref(null); // Default value for Pass
-        const selectedRequest = ref(null);
-        const showDialog = (val1) => {
-            isDialogVisible.value = true;
-            selectedRequest.value = val1;
-        };
-
-        const closeDialog = () => {
-            isDialogVisible.value = false;
-            selectedResult.value = null;
-            selectedRequest.value = null;
-        };
+    
         const fetchData = async () => {
-            getData(`getQARequests?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
+            getData(`getShippingRequests?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
                 .then((response) => {
                     requests.value = response.requests || [];
                 })
@@ -141,30 +112,28 @@ export default {
             }
         };
 
-        const acceptRequest = async (trans_id) => {
-            const request = requests.value.find(r => r.trans_id === trans_id);
+        const acceptRequest = async (request) => {
             const web3 = new Web3(window.ethereum);
-            const contractAddress = qaContractAddress;
-            const contract = new web3.eth.Contract(QaManagementABI, contractAddress);
+            const contractAddress = shippingContractAddress;
+            const contract = new web3.eth.Contract(ShippingManagementABI, contractAddress);
 
             try {
 
-                const tx = await contract.methods.acceptQARequest(
+                const tx = await contract.methods.acceptShippingRequest(
                     request.item_count,
                     web3.utils.toChecksumAddress(getAccount().value)
                 ).send({ from: getAccount().value});
                 const trans_id = tx['transactionHash'];
                 set_balance();
 
-                await postData("acceptQaRequest", {
+                await postData("acceptShippingRequest", {
                     log_id: getAccount().value,
                     request_id: request.trans_id,
-                    product_id: request.product,
+                    order_id: request.product_order,
                     trans_id: trans_id
                 }).then((response) => {
 
                     if (response.success != null) {
-                        closeDialog();
                         snackbarRef.value.show('The request has been accepted', 'success', 3000);
                         fetchData();
                     }
@@ -188,44 +157,26 @@ export default {
         };
 
 
-        const completeRequest = async () => {
-
-            if (selectedResult.value === null) {
-                snackbarRef.value.show('Please select the QA Result', 'error', 3000);
-
-            }
-
-            else if (selectedRequest.value === null) {
-                snackbarRef.value.show('Error completing request', 'error', 3000);
-
-            }
-
-            else {
-                const request = requests.value.find(r => r.trans_id === selectedRequest.value);
+        const completeRequest = async (request) => {
                 const web3 = new Web3(window.ethereum);
-                const contractAddress = qaContractAddress;
-                const contract = new web3.eth.Contract(QaManagementABI, contractAddress);
+                const contractAddress = shippingContractAddress;
+                const contract = new web3.eth.Contract(ShippingManagementABI, contractAddress);
                 
                 try {
-                    const res = selectedResult.value === 'pass' ? 1 : 3;
-
-                    const tx = await contract.methods.completeQARequest(
-                        request.item_count,
-                        res
+                    const tx = await contract.methods.completeShippingRequest(
+                        request.item_count
                     ).send({ from: getAccount().value });
                     const trans_id = tx['transactionHash'];
                     set_balance();
 
-                    await postData("completeQaRequest", {
+                    await postData("completeShippingRequest", {
                         log_id: getAccount().value,
                         request_id: request.trans_id,
-                        product_id: request.product,
-                        trans_id: trans_id,
-                        product_status: res
+                        order_id: request.product_order,
+                        trans_id: trans_id
                     }).then((response) => {
 
                         if (response.success != null) {
-                            closeDialog();
                             snackbarRef.value.show('The request has been completed', 'success', 3000);
                             fetchData();
                         }
@@ -245,7 +196,7 @@ export default {
                     console.error(error);
                     snackbarRef.value.show('Error completing request', 'error', 3000);
                 }
-            }
+            
 
         };
 
@@ -256,14 +207,10 @@ export default {
 
         return {
             requests,
-            isDialogVisible,
-            showDialog,
-            closeDialog,
             nextPage,
             previousPage,
             currentPage,
             pageSize,
-            selectedResult,
             getStatusColorClass,
             getAccount,
             acceptRequest,

@@ -22,7 +22,7 @@
                 <td>{{ user.name }}</td>
                 <td>
                     <template v-if="user.id === getAccount().value">
-                        <span>-</span>
+                        
                     </template>
 
                     <template v-else>
@@ -33,7 +33,7 @@
 
                 <td>
                     <template v-if="user.id === getAccount().value">
-                        <span>-</span>
+                       
                     </template>
                     <template v-else-if="user.deleted === 0">
                         <button @click="deleteUser(user.id)" class="delete-button">Disable</button>

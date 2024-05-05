@@ -20,7 +20,7 @@ import CustomParticles from './Particles.vue'
     </main>
 
     <footer>
-      <p>Powered by <a href="https://www.psut.edu.jo/" target="_blank">PSUT</a></p>
+      <p>Powered by <a href="https://www.psut.edu.jo/" target="_blank">PSUT Students</a></p>
     </footer>
   </div>
 </template>

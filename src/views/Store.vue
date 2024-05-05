@@ -28,7 +28,7 @@
                 <td>
 
                     <template v-if="product.owner === getAccount().value && product.status === 9">
-                        <button @click="showDialog(product.product_id, product.trans_id, true)"
+                        <button @click="showDialog(product)"
                             :class="getStatusColorClass(product.status_info.status_id)">{{
                 product.status_info.status_name }}</button>
                     </template>
@@ -88,7 +88,7 @@ import { ref, onMounted } from 'vue';
 import { getAccount, set_balance } from "@/web3Service.js" // Import the web3Service.js file
 import { getData, postData, pageSize } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
-import { QaManagementABI, qaContractAddress } from '@/contracts/QaManagementABI.js';
+import { OrderManagementABI, orderContractAddress } from '@/contracts/OrderManagementABI.js';
 import Web3 from 'web3';
 
 export default {
@@ -101,6 +101,7 @@ export default {
         const isDialogVisible = ref(false);
         const quantity = ref(null);
         const showDialog = (product_val) => {
+            quantity.value = null;
             isDialogVisible.value = true;
             selected_product.value = product_val;
         };
@@ -165,29 +166,36 @@ export default {
 
             else {
 
-                const contractAddress = qaContractAddress;
-                const contract = new web3.eth.Contract(QaManagementABI, contractAddress);
-                const rewardInEther = web3.utils.toWei((reward.value).toString(), 'ether');
+                const contractAddress = orderContractAddress;
+                const contract = new web3.eth.Contract(OrderManagementABI, contractAddress);
+                const rewardInEther = web3.utils.toWei((selected_product.value.price*quantity.value).toString(), 'ether');
+                console.log(selected_product.value.item_count);
+                console.log(selected_product.value.owner_info.owner_id);
+
                 try {
-                    console.log(selected_product.value.product_id);
-                    const tx = await contract.methods.addQARequest(
+                    const tx = await contract.methods.addOrder(
                         selected_product.value.product_id,
-                        rewardInEther
+                        quantity.value,
+                        5,
+                        rewardInEther,
+                        web3.utils.toChecksumAddress(selected_product.value.owner_info.owner_id),
+                        selected_product.value.quantity
                     ).send({ from: getAccount().value, value: rewardInEther });
                     console.log(tx);
                     const trans_id = tx['transactionHash'];
-                    const reqId = tx.events.QARequestAdded.returnValues.reqId.toString();
+                    const order_count = tx.events.OrderAdded.returnValues.orderId.toString();
                     set_balance();
-                    await postData("createQaRequest", {
+                    await postData("addOrder", {
                         log_id: getAccount().value,
                         trans_id: trans_id,
+                        quantity: parseInt(quantity.value),
                         product_id: selected_product.value.trans_id,
-                        reward: reward.value,
-                        item_count: reqId,
+                        item_count: parseInt(order_count),
                     }).then((response) => {
 
                         if (response.success != null) {
                             closeDialog();
+                            fetchData();
                             snackbarRef.value.show('The request has been sent', 'success', 3000);
                         }
                         else {

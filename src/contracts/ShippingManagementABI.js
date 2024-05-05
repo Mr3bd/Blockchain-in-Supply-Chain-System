@@ -1,73 +1,17 @@
 // QaManagementABI.js
-const qaContractAddress = "0xCC78C2e30128F892e21B096E01A668deDf42C876";
+const shippingContractAddress = "0xDa65788caDF34481a99a22FD1D3173F69BB2Af1e";
 
-const QaManagementABI = [
+const ShippingManagementABI = [
   {
     inputs: [
       {
         internalType: "address",
-        name: "_productContractAddress",
+        name: "_orderContractAddress",
         type: "address",
       },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "reqId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "productId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "status",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "qaUser",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "reward",
-        type: "uint256",
-      },
-    ],
-    name: "QARequestAdded",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "reqId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "status",
-        type: "uint256",
-      },
-    ],
-    name: "QARequestStatusChanged",
-    type: "event",
   },
   {
     anonymous: false,
@@ -95,6 +39,92 @@ const QaManagementABI = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "reqId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "orderId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "status",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "lgUser",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "reward",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "country",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "city",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "street",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "zipcode",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "building",
+        type: "string",
+      },
+    ],
+    name: "ShippingRequestAdded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "reqId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "status",
+        type: "uint256",
+      },
+    ],
+    name: "ShippingRequestStatusChanged",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -103,11 +133,11 @@ const QaManagementABI = [
       },
       {
         internalType: "address",
-        name: "_qaUser",
+        name: "_lgUser",
         type: "address",
       },
     ],
-    name: "acceptQARequest",
+    name: "acceptShippingRequest",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -116,7 +146,7 @@ const QaManagementABI = [
     inputs: [
       {
         internalType: "uint256",
-        name: "_productId",
+        name: "_orderId",
         type: "uint256",
       },
       {
@@ -124,8 +154,33 @@ const QaManagementABI = [
         name: "_reward",
         type: "uint256",
       },
+      {
+        internalType: "string",
+        name: "_country",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_city",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_street",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_zipcode",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_building",
+        type: "string",
+      },
     ],
-    name: "addQARequest",
+    name: "addShippingRequest",
     outputs: [
       {
         internalType: "uint256",
@@ -144,7 +199,7 @@ const QaManagementABI = [
         type: "uint256",
       },
     ],
-    name: "cancelQARequest",
+    name: "cancelshippingRequest",
     outputs: [],
     stateMutability: "payable",
     type: "function",
@@ -156,64 +211,20 @@ const QaManagementABI = [
         name: "_id",
         type: "uint256",
       },
-      {
-        internalType: "uint256",
-        name: "_status",
-        type: "uint256",
-      },
     ],
-    name: "completeQARequest",
+    name: "completeShippingRequest",
     outputs: [],
     stateMutability: "payable",
     type: "function",
   },
   {
     inputs: [],
-    name: "productContract",
+    name: "orderContract",
     outputs: [
       {
-        internalType: "contract ProductManagementInterface",
+        internalType: "contract OrderManagementInterface",
         name: "",
         type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "qaRequests",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "id",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "productId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "status",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "qaUser",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "reward",
-        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -232,5 +243,69 @@ const QaManagementABI = [
     stateMutability: "view",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "shippingRequests",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "orderId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "status",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "lgUser",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "reward",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "country",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "city",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "streen",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "zipcode",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "building",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ];
-export { QaManagementABI, qaContractAddress };
+export { ShippingManagementABI, shippingContractAddress };

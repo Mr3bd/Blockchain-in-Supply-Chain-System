@@ -12,6 +12,8 @@ import Products from "./views/Products.vue";
 import AddProduct from "./views/AddProduct.vue";
 import QARequests from "./views/QARequests.vue";
 import Store from "./views/Store.vue";
+import Orders from "./views/Orders.vue";
+import ShippingRequests from "./views/ShippingRequests.vue";
 
 const routes = [
   { path: "/", redirect: "/dashboard" }, // Redirect root path to '/dashboard'
@@ -29,6 +31,8 @@ const routes = [
       { path: "addproduct", component: AddProduct },
       { path: "qarequests", component: QARequests },
       { path: "store", component: Store },
+      { path: "orders", component: Orders },
+      { path: "shippingrequests", component: ShippingRequests },
     ],
   },
 ];
@@ -41,11 +45,6 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = !!getAccount().value;
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
-  console.log("Reouter => Account: " + getAccount().value);
-  if (accountBalance.value == null) {
-    set_balance();
-  }
-  console.log();
   if (requiresAuth && !isAuthenticated) {
     // If authentication is required but user is not authenticated,
     // redirect to the login page
@@ -53,10 +52,16 @@ router.beforeEach((to, from, next) => {
   } else if (isAuthenticated && to.path === "/") {
     // If user is authenticated and navigates to the root path,
     // redirect to the dashboard page
+    if (accountBalance.value == null) {
+      set_balance();
+    }
     next("/dashboard");
   } else {
     if (user.value.id != null) {
       next();
+      if (accountBalance.value == null) {
+        set_balance();
+      }
     } else {
       if (getAccount().value != null) {
         check_login(next);
@@ -75,6 +80,9 @@ export const check_login = async (next) => {
       if (user.value.deleted == 1) {
         logout();
       } else {
+        if (accountBalance.value == null) {
+          set_balance();
+        }
         next();
       }
     })

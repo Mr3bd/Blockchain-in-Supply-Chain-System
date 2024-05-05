@@ -47,11 +47,10 @@
                     <template
                         v-if="product.owner === getAccount().value && (product.status === 4 || product.status === 3)">
                         <button @click="showDialog(product.product_id, product.trans_id, false)"
-                            class="default-status">Request
-                            Review</button>
+                            class="default-status">Request Review</button>
                     </template>
                     <template v-else>
-                        <span>-</span>
+                   
                     </template>
                 </td>
             </tr>
@@ -96,10 +95,8 @@
                 </v-card-actions>
             </v-card>
         </template>
-
-
-
     </v-dialog>
+    
     <Snackbar ref="snackbarRef" />
 </template>
 
@@ -125,6 +122,7 @@ export default {
         const qaReqData = ref({
             product_id: '',
             trans_id: '',
+            reward: 0
         });
         const selected_product = ref({
             product_id: '',

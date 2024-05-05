@@ -10,26 +10,34 @@
 
 		<h3 style="font-weight: 600; color: #00a36c;">Menu</h3>
 		<div class="menu">
-			<router-link to="/dashboard/users" class="button">
+			<router-link v-if="HasPermission('getUsers')" to="/dashboard/users" class="button">
 				<span class="material-icons">group</span>
 				<span class="text">Users</span>
 			</router-link>
-			<router-link to="/dashboard/materials" class="button">
+			<router-link v-if="HasPermission('getMaterials')" to="/dashboard/materials" class="button">
 				<span class="material-icons">list</span>
 				<span class="text">Materials</span>
 			</router-link>
-			<router-link to="/dashboard/products" class="button">
+			<router-link v-if="HasPermission('getProducts')" to="/dashboard/products" class="button">
 				<span class="material-icons">inventory_2</span>
 				<span class="text">Products</span>
 			</router-link>
 
-			<router-link to="/dashboard/qarequests" class="button">
+			<router-link v-if="HasPermission('getQARequests')" to="/dashboard/qarequests" class="button">
 				<span class="material-icons">receipt_long</span>
 				<span class="text">QA Requests</span>
 			</router-link>
-			<router-link to="/dashboard/store" class="button">
+			<router-link v-if="HasPermission('getStoreProducts')" to="/dashboard/store" class="button">
 				<span class="material-icons">local_mall</span>
 				<span class="text">Store</span>
+			</router-link>
+			<router-link v-if="HasPermission('getOrders')" to="/dashboard/orders" class="button">
+				<span class="material-icons">grading</span>
+				<span class="text">Orders</span>
+			</router-link>
+			<router-link v-if="HasPermission('getShippingRequests')" to="/dashboard/shippingrequests" class="button">
+				<span class="material-icons">local_shipping</span>
+				<span class="text">Shipping Requests</span>
 			</router-link>
 			<!-- <router-link to="/addproduct" class="button">
 				<span class="material-icons">description</span>
@@ -64,6 +72,17 @@ const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 const ToggleMenu = () => {
 	is_expanded.value = !is_expanded.value
 	localStorage.setItem("is_expanded", is_expanded.value)
+}
+
+</script>
+<script>
+import { user } from '@/globalVariables';
+
+const HasPermission = (role) => {
+	if (user.value.role_info.role_id == 1) {
+		return true;
+	}
+	return user.value.permissions.includes(role);
 }
 </script>
 

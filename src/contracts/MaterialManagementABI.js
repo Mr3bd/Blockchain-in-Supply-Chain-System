@@ -1,5 +1,5 @@
 // MaterialManagementABI.js
-const materialContractAddress = "0x640B9E19547f7de5F2f857Be7a098C2ff08260b3";
+const materialContractAddress = "0x919C24ef435F6dF75c2e8faeB72e4D3053D1D4ce";
 
 const MaterialManagementABI = [
   {
