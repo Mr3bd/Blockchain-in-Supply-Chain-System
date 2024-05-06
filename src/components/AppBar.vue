@@ -9,8 +9,10 @@
         </h3>
 
         <p :title="user.id" class="user-role" style="color: #2C3E50;">
-            {{ user.name }} -
-            <span style="color: #00a36c;">{{ accountBalance }} ETH</span>
+            {{ user.name }} |
+            <span style="color: #00a36c;margin-left: 4px;" class="material-icons">wallet</span>
+            <span style="color: #00a36c;"> {{ accountBalance }} ETH</span>
+
         </p>
     </header>
 </template>
@@ -49,9 +51,10 @@ import { user, accountBalance } from '@/globalVariables';
 }
 
 .user-role, .user-role span {
-    margin-right: 4px;
-    font-weight: 600;
-    font-size: 14px;
+        margin-right: 4px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
     /* Adjust margin as needed */
 }
 
