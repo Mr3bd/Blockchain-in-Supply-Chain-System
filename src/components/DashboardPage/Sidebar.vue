@@ -39,6 +39,10 @@
 				<span class="material-icons">local_shipping</span>
 				<span class="text">Shipping Requests</span>
 			</router-link>
+			<router-link v-if="HasPermission('getSystemLogs')" to="/dashboard/systemlogs" class="button">
+				<span class="material-icons">description</span>
+				<span class="text">System Logs</span>
+			</router-link>
 			<!-- <router-link to="/addproduct" class="button">
 				<span class="material-icons">description</span>
 				<span class="text">Add Product</span>
@@ -192,6 +196,7 @@ aside {
 				.material-icons,
 				.text {
 					color: var(--primary);
+					font-weight: 600;
 				}
 			}
 		}

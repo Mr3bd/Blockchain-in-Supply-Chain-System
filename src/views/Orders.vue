@@ -67,6 +67,8 @@
                 </td>
             </tr>
         </tbody>
+        <TableEmpty :length="orders.length" colms="8"></TableEmpty>
+
     </table>
     <div class="pn-buttons-container">
         <button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
@@ -148,6 +150,7 @@ import Snackbar from '@/components/Snackbar.vue';
 import { OrderManagementABI, orderContractAddress } from '@/contracts/OrderManagementABI.js';
 import { ShippingManagementABI, shippingContractAddress } from '@/contracts/ShippingManagementABI.js';
 import Web3 from 'web3';
+import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
 
 export default {
     setup() {
@@ -253,11 +256,12 @@ export default {
                         order.item_count,
                         10
                     ).send({ from: getAccount().value });
-                    console.log(tx);
+                    const trans_id = tx['transactionHash'];
                     set_balance();
                     await postData("sendOrderForShipping", {
                         log_id: getAccount().value,
-                        order_id: order.trans_id
+                        order_id: order.trans_id,
+                        trans_id: trans_id
                     }).then((response) => {
                         if (response.success != null) {
                             fetchData();
@@ -374,14 +378,15 @@ export default {
             const contractAddress = shippingContractAddress;
             const contract = new web3.eth.Contract(ShippingManagementABI, contractAddress);
             try {
-                await contract.methods.cancelshippingRequest(
+                tx = await contract.methods.cancelshippingRequest(
                     shipReqData.value.item_count
                 ).send({ from: getAccount().value });
-
+                const trans_id = tx['transactionHash'];
                 set_balance();
                 await postData("cancelShippingRequest", {
                     log_id: getAccount().value,
-                    request_id: shipReqData.value.trans_id
+                    request_id: shipReqData.value.trans_id,
+                    trans_id: trans_id
                 }).then((response) => {
 
                     if (response.success != null) {
@@ -453,7 +458,8 @@ export default {
         };
     },
     components: {
-        Snackbar
+        Snackbar,
+        TableEmpty
     },
 };
 </script>

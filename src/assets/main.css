@@ -204,7 +204,6 @@ a,
 
 .app-table {
   width: 100%;
-  border-collapse: separate;
   margin-bottom: 16px;
   background-color: white;
   border-radius: 15px;
@@ -402,4 +401,23 @@ option:disabled {
   margin-top: 40px;
   color: var(--grey);
   font-size: 14px;
+}
+
+.no-records{
+  width: 100%;
+  text-align: center !important;
+  color: #00a36c;
+    margin-top: 32px;
+      margin-bottom: 32px;
+}
+
+.no-records p{
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.no-records-image {
+  width: 8vw; 
+  max-width: 80px;
+  height: auto; 
 }

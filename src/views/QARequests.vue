@@ -38,11 +38,13 @@
                     </template>
 
                     <template v-else>
-                        
+
                     </template>
                 </td>
             </tr>
         </tbody>
+        <TableEmpty :length="requests.length" colms="7"></TableEmpty>
+
     </table>
     <div class="pn-buttons-container">
         <button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
@@ -84,6 +86,7 @@ import { getData, postData, pageSize } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 import { QaManagementABI, qaContractAddress } from '@/contracts/QaManagementABI.js';
 import Web3 from 'web3'; // Import Web3 library
+import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
 
 export default {
     setup() {
@@ -279,7 +282,8 @@ export default {
         };
     },
     components: {
-        Snackbar
+        Snackbar,
+        TableEmpty
     },
 };
 </script>

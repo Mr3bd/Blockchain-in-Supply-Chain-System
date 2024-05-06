@@ -1,37 +1,33 @@
 <template>
 	<div class="app-header">
-		<h2 class="page-head">Materials</h2>
-		<button @click="goToAddMaterialPage" class="add-button">
-			<span class="material-icons">add</span>
-			<span>Add</span>
-		</button>
+		<h2 class="page-head">Logs</h2>
+
 	</div>
 	<table class="app-table">
 		<thead>
 			<tr>
 				<th>Trans ID</th>
-				<th>Name</th>
-				<th>Price (ETH)</th>
-				<th>Quantity</th>
+				<th>User ID</th>
+				<th>User Name</th>
+				<th>Description</th>
 				<th>Logtime</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr v-for="material in materials" :key="material.id">
-				<td>{{ truncateTransId(material.trans_id) }}</td>
-				<td>{{ material.name }}</td>
-				<td>{{ material.price }}</td>
-				<td>{{ material.quantity }}x</td>
-				<td>{{ material.logtime }}</td>
+			<tr v-for="log in logs" :key="log.trans_id">
+				<td>{{ truncateTransId(log.trans_id) }}</td>
+				<td>{{ truncateTransId(log.owner_info.owner_id) }}</td>
+				<td>{{ log.owner_info.owner_name }}</td>
+				<td>{{ log.description }}</td>
+				<td>{{ log.logtime }}</td>
 			</tr>
-
 		</tbody>
-		<TableEmpty :length="materials.length" colms="5"></TableEmpty>
+		<TableEmpty :length="logs.length" colms="5"></TableEmpty>
 
 	</table>
 	<div class="pn-buttons-container">
 		<button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
-		<button class='prev-next-btn' @click="nextPage" :disabled="materials.length < pageSize">Next Page</button>
+		<button class='prev-next-btn' @click="nextPage" :disabled="logs.length < pageSize">Next Page</button>
 	</div>
 
 </template>
@@ -39,19 +35,18 @@
 <script>
 import { ref } from 'vue';
 import { getAccount } from "@/web3Service.js" // Import the web3Service.js file
-import router from "@/router.js"; // Import the Vue Router instance
 import { getData, pageSize } from "@/apiService.js";
 import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
 
 export default {
 	setup() {
-		const materials = ref([]);
+		const logs = ref([]);
 		let currentPage = ref(1);
 		
 		const fetchData = async () => {
-			getData(`getMaterials?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
+			getData(`getSystemLogs?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
 				.then((response) => {
-					materials.value = response.materials || [];
+					logs.value = response.logs || [];
 				})
 				.catch((error) => {
 					console.error("Error while making Get request:", error);
@@ -69,18 +64,16 @@ export default {
 				fetchData();
 			}
 		};
-		const goToAddMaterialPage = () => {
-			router.push("/dashboard/addmaterial");
-		};
+	
 		fetchData(); // Fetch data on component mount
 
 		return {
-			materials,
+			logs,
 			nextPage,
 			previousPage,
 			currentPage,
 			pageSize,
-			goToAddMaterialPage
+			TableEmpty
 		};
 	},
 	data() {

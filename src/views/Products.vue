@@ -50,11 +50,13 @@
                             class="default-status">Request Review</button>
                     </template>
                     <template v-else>
-                   
+
                     </template>
                 </td>
             </tr>
         </tbody>
+        <TableEmpty :length="products.length" colms="8"></TableEmpty>
+
     </table>
     <div class="pn-buttons-container">
         <button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
@@ -96,7 +98,7 @@
             </v-card>
         </template>
     </v-dialog>
-    
+
     <Snackbar ref="snackbarRef" />
 </template>
 
@@ -109,6 +111,7 @@ import { getData, postData, pageSize } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 import { QaManagementABI, qaContractAddress } from '@/contracts/QaManagementABI.js';
 import Web3 from 'web3'; // Import Web3 library
+import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
 
 export default {
     setup() {
@@ -277,14 +280,15 @@ export default {
             const contractAddress = qaContractAddress;
             const contract = new web3.eth.Contract(QaManagementABI, contractAddress);
             try {
-                await contract.methods.cancelQARequest(
+                const tx = await contract.methods.cancelQARequest(
                     qaReqData.value.item_count
                 ).send({ from: getAccount().value });
-
+                const trans_id = tx['transactionHash'];
                 set_balance();
                 await postData("cancelQaRequest", {
                     log_id: getAccount().value,
-                    request_id: qaReqData.value.trans_id
+                    request_id: qaReqData.value.trans_id,
+                    trans_id: trans_id
                 }).then((response) => {
 
                     if (response.success != null) {
@@ -344,7 +348,8 @@ export default {
         };
     },
     components: {
-        Snackbar
+        Snackbar,
+        TableEmpty
     },
 };
 </script>

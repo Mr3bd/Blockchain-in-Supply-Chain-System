@@ -30,11 +30,11 @@
                     <template v-if="product.owner === getAccount().value && product.status === 9">
                         <button @click="showDialog(product)"
                             :class="getStatusColorClass(product.status_info.status_id)">{{
-                product.status_info.status_name }}</button>
+                            product.status_info.status_name }}</button>
                     </template>
                     <template v-else>
                         <button @click="" :class="getStatusColorClass(product.status_info.status_id)">{{
-                product.status_info.status_name }}</button>
+                            product.status_info.status_name }}</button>
                     </template>
 
 
@@ -50,7 +50,10 @@
 
                 </td>
             </tr>
+
+
         </tbody>
+        <TableEmpty :length="products.length" colms="9"></TableEmpty>
     </table>
     <div class="pn-buttons-container">
         <button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
@@ -90,6 +93,7 @@ import { getData, postData, pageSize } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 import { OrderManagementABI, orderContractAddress } from '@/contracts/OrderManagementABI.js';
 import Web3 from 'web3';
+import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
 
 export default {
     setup() {
@@ -247,7 +251,8 @@ export default {
         };
     },
     components: {
-        Snackbar
+        Snackbar,
+        TableEmpty
     },
 };
 </script>

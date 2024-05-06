@@ -2,6 +2,7 @@
 import HelloWorld from './HelloWorld.vue'
 import LoginForm from './LoginForm.vue'
 import CustomParticles from './Particles.vue'
+
 </script>
 
 <template>

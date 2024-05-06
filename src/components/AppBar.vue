@@ -4,9 +4,13 @@
             <img alt="BSC Logo" src="@/assets/logo.svg" width="96" />
             <h2 class="green">BSC</h2>
         </div>
-        <p :title="user.id" class="role">
-            {{ user.name }} ({{ user.role_info.role_name }}) - 
-            <span style="color: #00a36c; font-weight: 600;">{{ accountBalance }} ETH</span>
+        <h3 class="page-head">
+            {{ user.role_info.role_name }} Dashboard
+        </h3>
+
+        <p :title="user.id" class="user-role" style="color: #2C3E50;">
+            {{ user.name }} -
+            <span style="color: #00a36c;">{{ accountBalance }} ETH</span>
         </p>
     </header>
 </template>
@@ -44,8 +48,11 @@ import { user, accountBalance } from '@/globalVariables';
     margin-left: 16px;
 }
 
-.role {
+.user-role, .user-role span {
     margin-right: 4px;
+    font-weight: 600;
+    font-size: 14px;
     /* Adjust margin as needed */
 }
+
 </style>

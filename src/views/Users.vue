@@ -22,7 +22,7 @@
                 <td>{{ user.name }}</td>
                 <td>
                     <template v-if="user.id === getAccount().value">
-                        
+
                     </template>
 
                     <template v-else>
@@ -33,7 +33,7 @@
 
                 <td>
                     <template v-if="user.id === getAccount().value">
-                       
+
                     </template>
                     <template v-else-if="user.deleted === 0">
                         <button @click="deleteUser(user.id)" class="delete-button">Disable</button>
@@ -45,6 +45,8 @@
                 <td>{{ user.logtime }}</td>
             </tr>
         </tbody>
+        <TableEmpty :length="users.length" colms="5"></TableEmpty>
+
     </table>
     <div class="pn-buttons-container">
         <button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
@@ -77,6 +79,7 @@ import router from "@/router.js";
 import { getData, postData, pageSize } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 import { reactive } from 'vue';
+import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
 
 export default {
     setup() {
@@ -186,10 +189,12 @@ export default {
             getAccount,
             selectRole,
             openRoleSelection,
+            
         };
     },
     components: {
-        Snackbar
+        Snackbar,
+        TableEmpty
     }
 };
 </script>

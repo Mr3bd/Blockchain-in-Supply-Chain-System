@@ -7,7 +7,7 @@
     <div class="main-content">
       <!-- Sidebar -->
       <Sidebar />
-      <CustomParticles :backgroundColor="'#f4f7fa'" :numberOfParts=10 :numberClick=0 />
+      <CustomParticles :backgroundColor="'#f4f7fa'" :numberOfParts=20 :numberClick=0 />
       <!-- Content -->
       <div class="content">
         <AppBar />

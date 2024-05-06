@@ -14,6 +14,7 @@ import QARequests from "./views/QARequests.vue";
 import Store from "./views/Store.vue";
 import Orders from "./views/Orders.vue";
 import ShippingRequests from "./views/ShippingRequests.vue";
+import SystemLogs from "./views/SystemLogs.vue";
 
 const routes = [
   { path: "/", redirect: "/dashboard" }, // Redirect root path to '/dashboard'
@@ -33,6 +34,7 @@ const routes = [
       { path: "store", component: Store },
       { path: "orders", component: Orders },
       { path: "shippingrequests", component: ShippingRequests },
+      { path: "systemlogs", component: SystemLogs },
     ],
   },
 ];
