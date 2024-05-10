@@ -10,6 +10,12 @@
 
 		<h3 style="font-weight: 600; color: #00a36c;">Menu</h3>
 		<div class="menu">
+			<router-link v-if="HasPermission('getNotifications') " to="/dashboard/notifications" class="button">
+				<span class="material-icons">notifications</span>
+				<span class="text">Notifications</span>
+				<span v-if="user.unReadNoti > 0" class="counter">{{ user.unReadNoti }}</span>
+
+			</router-link>
 			<router-link v-if="HasPermission('getUsers')" to="/dashboard/users" class="button">
 				<span class="material-icons">group</span>
 				<span class="text">Users</span>
@@ -70,6 +76,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { user } from '@/globalVariables';
 
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 
@@ -243,5 +250,17 @@ aside {
 		position: absolute;
 		z-index: 99;
 	}
+}
+.counter {
+	background-color: #d52626;
+	color: white;
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	line-height: 20px;
+	margin-left: 10px;
+	font-size: 12px;
+
 }
 </style>
