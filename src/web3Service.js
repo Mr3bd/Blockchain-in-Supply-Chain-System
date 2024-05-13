@@ -74,7 +74,7 @@ export const login = async () => {
 };
 
 export const check_login = async () => {
-  postData("login", { id: account.value })
+  postData("login", { id: account.value }, ()=> {}, ()=>{})
     .then((response) => {
       console.log(response);
       user.value = response["user"];

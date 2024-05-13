@@ -77,7 +77,7 @@ router.beforeEach((to, from, next) => {
 });
 
 export const check_login = async (next) => {
-  postData("login", { id: getAccount().value })
+  postData("login", { id: getAccount().value }, ()=> {}, ()=>{})
     .then((response) => {
       user.value = response["user"];
       console.log(response);

@@ -53,7 +53,7 @@
 
 
         </tbody>
-        <TableEmpty :length="products.length" colms="9"></TableEmpty>
+        <TableEmpty :length="products.length" colms="9" :isLoading="isLoading"></TableEmpty>
     </table>
     <div class="pn-buttons-container">
         <button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
@@ -83,6 +83,8 @@
     </v-dialog>
 
     <Snackbar ref="snackbarRef" />
+    <AppLoading :isLoading="isLoading"></AppLoading>
+
 </template>
 
 
@@ -94,6 +96,7 @@ import Snackbar from '@/components/Snackbar.vue';
 import { OrderManagementABI, orderContractAddress } from '@/contracts/OrderManagementABI.js';
 import Web3 from 'web3';
 import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
+import AppLoading from "../components/DashboardPage/AppLoading.vue";
 
 export default {
     setup() {
@@ -104,6 +107,8 @@ export default {
         const selected_product = ref(null);
         const isDialogVisible = ref(false);
         const quantity = ref(null);
+        const isLoading = ref(false);
+
         const showDialog = (product_val) => {
             quantity.value = null;
             isDialogVisible.value = true;
@@ -117,7 +122,13 @@ export default {
         };
 
         const fetchData = async () => {
-            getData(`getStoreProducts?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
+            getData(`getStoreProducts?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`,
+                () => {
+                    isLoading.value = true;
+                },
+                () => {
+                    isLoading.value = false;
+                })
                 .then((response) => {
                     products.value = response.products || [];
                 })
@@ -195,7 +206,13 @@ export default {
                         quantity: parseInt(quantity.value),
                         product_id: selected_product.value.trans_id,
                         item_count: parseInt(order_count),
-                    }).then((response) => {
+                    },
+                        () => {
+                            isLoading.value = true;
+                        },
+                        () => {
+                            isLoading.value = false;
+                        }).then((response) => {
 
                         if (response.success != null) {
                             closeDialog();
@@ -239,7 +256,8 @@ export default {
             getStatusColorClass,
             getAccount,
             snackbarRef,
-            createOrder
+            createOrder,
+            isLoading
 
         };
     },
@@ -252,7 +270,8 @@ export default {
     },
     components: {
         Snackbar,
-        TableEmpty
+        TableEmpty,
+        AppLoading
     },
 };
 </script>

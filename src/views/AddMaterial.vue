@@ -24,6 +24,8 @@
 		<Snackbar ref="snackbarRef" />
 
 	</div>
+	<AppLoading :isLoading="isLoading"></AppLoading>
+
 </template>
 
 <script>
@@ -32,6 +34,7 @@ import Web3 from 'web3'; // Import Web3 library
 import { MaterialManagementABI, materialContractAddress } from '@/contracts/MaterialManagementABI.js';
 import { postData } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
+import AppLoading from "../components/DashboardPage/AppLoading.vue";
 
 export default {
 	data() {
@@ -39,6 +42,7 @@ export default {
 			itemName: '',
 			itemQuantity: 0,
 			itemPrice: 0.0,
+			isLoading: false
 		};
 	},
 	computed: {
@@ -47,12 +51,13 @@ export default {
 		}
 	},
 	components: {
-		Snackbar
+		Snackbar,
+		AppLoading
 	},
 	methods: {
 		addItem: async function () { // Mark the function as async
-
 			if (!this.isInvalidData) {
+
 				const web3 = new Web3(window.ethereum);
 
 				const contractAddress = materialContractAddress;
@@ -75,9 +80,18 @@ export default {
 						name: this.itemName,
 						quantity: this.itemQuantity,
 						price: this.itemPrice,
-						material_id: materialId
-					})
+						material_id: materialId,
+						
+					},
+						() => {
+							this.isLoading = true;
+						},
+						() => {
+							this.isLoading = false;
+						}
+					)
 						.then((response) => {
+
 
 							if (response.success != null) {
 								this.itemName = '';
@@ -90,9 +104,11 @@ export default {
 							}
 						})
 						.catch((error) => {
+
 							this.$refs.snackbarRef.show('Error adding material', 'error', 3000);
 						});
 				} catch (error) {
+
 					console.error(error);
 
 					this.$refs.snackbarRef.show('Error adding material', 'error', 3000);

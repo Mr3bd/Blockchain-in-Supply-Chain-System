@@ -63,6 +63,7 @@
         </div>
         <Snackbar ref="snackbarRef" />
     </div>
+    <AppLoading :isLoading="isLoading"></AppLoading>
 
 </template>
 
@@ -74,10 +75,12 @@ import { getAccount, set_balance } from "@/web3Service.js" // Import the web3Ser
 import { getData, postData } from "@/apiService.js";
 import { ProductManagementABI, productContractAddress } from '@/contracts/ProductManagementABI.js';
 import Snackbar from '@/components/Snackbar.vue';
+import AppLoading from '@/components/DashboardPage/AppLoading.vue';
 
 export default {
     setup() {
         const snackbarRef = ref(null);
+        const isLoading = ref(false);
 
         const product = ref({
             name: '',
@@ -219,8 +222,17 @@ export default {
                         name: product.value.name,
                         quantity: product.value.quantity,
                         price: product.value.price,
-                        material_ids: JSON.stringify(materials_json)
-                    }).then((response) => {
+                        material_ids: JSON.stringify(materials_json),   
+                    },
+                        () => {
+                            // showLoading function
+                            isLoading.value = true;
+                        },
+                        () => {
+                            // hideLoading function
+                            isLoading.value = false;
+                        }
+                    ).then((response) => {
 
                             if (response.success != null) {
                                 console.log('success django');
@@ -288,12 +300,14 @@ export default {
             deleteMaterialBlock,
             calculateCost,
             snackbarRef,
+            isLoading
 
 
         };
     },
     components: {
-        Snackbar
+        Snackbar,
+        AppLoading
     },
 };
 

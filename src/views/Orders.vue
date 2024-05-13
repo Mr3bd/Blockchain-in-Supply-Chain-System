@@ -67,9 +67,12 @@
                 </td>
             </tr>
         </tbody>
-        <TableEmpty :length="orders.length" colms="8"></TableEmpty>
+        <TableEmpty :length="orders.length" colms="8" :isLoading="isLoading"></TableEmpty>
 
     </table>
+
+
+
     <div class="pn-buttons-container">
         <button class='prev-next-btn' @click="previousPage" :disabled="currentPage === 1">Previous Page</button>
         <button class='prev-next-btn' @click="nextPage" :disabled="orders.length < pageSize">Next Page</button>
@@ -137,7 +140,7 @@
             </v-card>
         </template>
     </v-dialog>
-
+    <AppLoading :isLoading="isLoading"></AppLoading>
     <Snackbar ref="snackbarRef" />
 </template>
 
@@ -151,6 +154,7 @@ import { OrderManagementABI, orderContractAddress } from '@/contracts/OrderManag
 import { ShippingManagementABI, shippingContractAddress } from '@/contracts/ShippingManagementABI.js';
 import Web3 from 'web3';
 import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
+import AppLoading from "../components/DashboardPage/AppLoading.vue";
 
 export default {
     setup() {
@@ -161,6 +165,8 @@ export default {
         const cancelMode = ref(false);
         const selected_order = ref(null);
         const isDialogVisible = ref(false);
+        const isLoading = ref(false);
+
         const shipReqDto = ref(
             {
                 order_id: '',
@@ -209,11 +215,19 @@ export default {
         };
 
         const fetchData = async () => {
-            getData(`getOrders?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
+            getData(`getOrders?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`,
+                () => {
+                    isLoading.value = true;
+                },
+                () => {
+                    isLoading.value = false;
+                })
                 .then((response) => {
                     orders.value = response.orders || [];
+
                 })
                 .catch((error) => {
+
                     console.error("Error while making Get request:", error);
                 });
         };
@@ -348,6 +362,11 @@ export default {
                         order_id: selected_order.value.trans_id,
                         reward: shipReqDto.value.reward,
                         item_count: reqId,
+                        country: shipReqDto.value.country,
+                        city: shipReqDto.value.city,
+                        street: shipReqDto.value.street,
+                        zipcode: shipReqDto.value.zipcode,
+                        building: shipReqDto.value.building,
                     }).then((response) => {
 
                         if (response.success != null) {
@@ -432,6 +451,7 @@ export default {
             orders,
             showDialog,
             closeDialog,
+            isLoading,
             nextPage,
             cancelMode,
             shipReqData,
@@ -447,6 +467,7 @@ export default {
             completePackaging,
             addShippingRequest,
             cancelShippingRequest,
+            
 
         };
     },
@@ -459,7 +480,8 @@ export default {
     },
     components: {
         Snackbar,
-        TableEmpty
+        TableEmpty,
+        AppLoading
     },
 };
 </script>

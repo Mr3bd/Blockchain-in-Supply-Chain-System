@@ -12,6 +12,7 @@
                 <th>Shipment ID</th>
                 <th>Reward 🎉 (ETH)</th>
                 <th>Status</th>
+                <th>Address</th>
                 <th>Logtime</th>
                 <th>Action</th>
             </tr>
@@ -35,6 +36,13 @@
                     <button @click="" :class="getStatusColorClass(request.status_info.status_id)">{{
                         request.status_info.status_name }}</button>
                 </td>
+                <td>
+                    <template v-if="request.status === 1">
+                        <button @click="showDialog(request)" class="out-for-delivery">
+                            <span class="material-icons" style="vertical-align: middle;">info</span>
+                            <span style="vertical-align: middle;"> Address</span>
+                        </button> </template>
+                </td>
                 <td>{{ request.logtime }}</td>
                 <td>
                     <template v-if="request.status === 1">
@@ -49,7 +57,7 @@
                 </td>
             </tr>
         </tbody>
-        <TableEmpty :length="requests.length" colms="7"></TableEmpty>
+        <TableEmpty :length="requests.length" colms="7" :isLoading="isLoading"></TableEmpty>
 
     </table>
     <div class="pn-buttons-container">
@@ -57,6 +65,64 @@
         <button class='prev-next-btn' @click="nextPage" :disabled="requests.length < pageSize">Next Page</button>
 
     </div>
+
+    <v-dialog v-model="isDialogVisible" max-width="500">
+        <v-card color="#34495e">
+            <v-card-title>
+                <span class="material-icons" style="vertical-align: middle;">info</span> Address
+            </v-card-title>
+
+            <v-card-text>
+                <v-container>
+                    <v-row>
+                        <v-col cols="6">
+                            <div>
+                                <p>Country</p>
+                                <p>{{ selected_req.country }}</p>
+                            </div>
+                        </v-col>
+                        <v-col cols="6">
+                            <div>
+                                <p>City</p>
+                                <p>{{ selected_req.city }}</p>
+                            </div>
+
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="4">
+                            <div>
+                                <p>Street</p>
+                                <p>{{ selected_req.street }}</p>
+                            </div>
+                        </v-col>
+                        <v-col cols="4">
+                            <div>
+                                <p>ZIP Code</p>
+                                <p>{{ selected_req.zipcode }}</p>
+                            </div>
+
+
+                        </v-col>
+                        <v-col cols="4">
+                            <div>
+                                <p>Building</p>
+                                <p>{{ selected_req.building }}</p>
+                            </div>
+
+                        </v-col>
+                    </v-row>
+
+                </v-container>
+
+            </v-card-text>
+
+            <v-card-actions>
+                <v-btn color="#ff1818" @click="closeDialog">Close</v-btn>
+            </v-card-actions>
+        </v-card>
+
+    </v-dialog>
 
     <Snackbar ref="snackbarRef" />
 </template>
@@ -76,7 +142,16 @@ export default {
         const snackbarRef = ref(null);
         const requests = ref([]);
         let currentPage = ref(1);
-    
+        const selected_req = ref(null);
+        const isDialogVisible = ref(false);
+        const showDialog = (order_val, isCancel) => {
+           
+            isDialogVisible.value = true;
+            selected_req.value = order_val;
+        };
+        const closeDialog = () => {
+            isDialogVisible.value = false;
+        };
         const fetchData = async () => {
             getData(`getShippingRequests?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
                 .then((response) => {
@@ -211,6 +286,10 @@ export default {
         return {
             requests,
             nextPage,
+            showDialog,
+            closeDialog,
+            isDialogVisible,
+            selected_req,
             previousPage,
             currentPage,
             pageSize,
@@ -218,7 +297,7 @@ export default {
             getAccount,
             acceptRequest,
             completeRequest,
-            snackbarRef
+            snackbarRef,
         };
     },
     data() {

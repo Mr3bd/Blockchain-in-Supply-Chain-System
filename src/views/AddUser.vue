@@ -39,6 +39,7 @@
       </v-bottom-sheet>
 
    </div>
+   <AppLoading :isLoading="isLoading"></AppLoading>
 </template>
 
 <script>
@@ -46,6 +47,7 @@ import { getAccount } from "@/web3Service.js" // Import the web3Service.js file
 import { postData, getData } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 import { ref } from 'vue';
+import AppLoading from "../components/DashboardPage/AppLoading.vue";
 
 export default {
    setup() {
@@ -56,14 +58,25 @@ export default {
       const showRoleSelectionRef = ref(false);
       const wId = ref('');
       const uName = ref('');
+      const isLoading = ref(false);
 
       const openRoleSelection = async () => {
-         getData(`rolesLookUp?page=1&pageSize=100`)
+         getData(`rolesLookUp?page=1&pageSize=100`,
+            () => {
+               isLoading.value = true;
+            },
+            () => {
+               isLoading.value = false;
+            }
+         )
             .then((response) => {
+
                roles.value = response.roles || [];
                showRoleSelectionRef.value = true;
+
             }).catch((error) => {
                console.error('Error fetching roles:', error);
+
             });
 
       };
@@ -83,6 +96,7 @@ export default {
          getAccount,
          selectRole,
          openRoleSelection,
+         isLoading
       };
    },
 
@@ -100,13 +114,22 @@ export default {
       }
    },
    components: {
-      Snackbar
+      Snackbar,
+      AppLoading
    },
    methods: {
       addUser: async function () { // Mark the function as async
          if (!this.isInvalidData) {
-            await postData("addUser", { log_id: getAccount().value, id: this.wId, name: this.uName, role: this.selectedRoleId })
+            await postData("addUser", { log_id: getAccount().value, id: this.wId, name: this.uName, role: this.selectedRoleId },
+               () => {
+                  this.isLoading = true;
+               },
+               () => {
+                  this.isLoading = false;
+               },
+            )
                .then((response) => {
+
                   console.log(response.success != null);
                   if (response.success != null) {
                      this.wId = '';
@@ -120,6 +143,7 @@ export default {
                   }
                })
                .catch((error) => {
+
                   this.$refs.snackbarRef.show('Error adding user', 'error', 3000);
                });
          }

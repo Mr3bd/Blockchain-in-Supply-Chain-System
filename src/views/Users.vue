@@ -45,7 +45,7 @@
                 <td>{{ user.logtime }}</td>
             </tr>
         </tbody>
-        <TableEmpty :length="users.length" colms="5"></TableEmpty>
+        <TableEmpty :length="users.length" colms="5" :isLoading="isLoading"></TableEmpty>
 
     </table>
     <div class="pn-buttons-container">
@@ -66,6 +66,8 @@
         </v-list>
     </v-bottom-sheet>
 
+
+    <AppLoading :isLoading="isLoading"></AppLoading>
     <!-- <RoleSelection v-if="showRoleSelection" :roles="roles" :selectedRoleId="selectedRoleId" @roleSelected="selectRole"
         @close="showRoleSelection = false" />
 
@@ -80,6 +82,7 @@ import { getData, postData, pageSize } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 import { reactive } from 'vue';
 import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
+import AppLoading from "../components/DashboardPage/AppLoading.vue";
 
 export default {
     setup() {
@@ -90,13 +93,25 @@ export default {
         const selectedUser = reactive({}); // To keep track of the selected user
         const selectedRoleId = ref(null);
         const showRoleSelectionRef = ref(false);
+        const isLoading = ref(false);
 
         const fetchData = async () => {
-            getData(`getUsers?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
+
+            getData(`getUsers?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`,
+                () => {
+                    isLoading.value = true;
+                },
+                () => {
+                    isLoading.value = false;
+                })
                 .then((response) => {
+
+                    
                     users.value = response.users || [];
                 })
                 .catch((error) => {
+
+                    
                     console.error("Error while making Get request:", error);
                 });
         };
@@ -118,52 +133,99 @@ export default {
         };
 
         const deleteUser = (uId) => {
-            postData("deleteUser", { log_id: getAccount().value, id: uId })
+
+            
+            postData("deleteUser", { log_id: getAccount().value, id: uId },
+                () => {
+                    isLoading.value = true;
+                },
+                () => {
+                    isLoading.value = false;
+                })
                 .then((response) => {
-                    snackbarRef.value.show('The user has been deleted', 'success', 3000);
+                    
                     fetchData();
+                    snackbarRef.value.show('The user has been deleted', 'success', 3000);
+
                 })
                 .catch((error) => {
+
+                    
                     snackbarRef.value.show('Something went wrong', 'error', 3000);
                     console.error(error);
                 });
         };
 
         const activateUser = (uId) => {
-            postData("activateUser", { log_id: getAccount().value, id: uId })
+
+            
+            postData("activateUser", { log_id: getAccount().value, id: uId },
+                () => {
+                    isLoading.value = true;
+                },
+                () => {
+                    isLoading.value = false;
+                })
                 .then((response) => {
-                    snackbarRef.value.show('The user has been activated', 'success', 3000);
+                    
                     fetchData();
+                    snackbarRef.value.show('The user has been activated', 'success', 3000);
+
                 })
                 .catch((error) => {
+
+                    
                     snackbarRef.value.show('Something went wrong', 'error', 3000);
                     console.error(error);
                 });
         };
 
         const openRoleSelection = async (user) => {
+
+            
             selectedUser.value = user;
             selectedRoleId.value = selectedUser.value.role_info.role_id;
-            getData(`rolesLookUp?page=1&pageSize=100`)
+            getData(`rolesLookUp?page=1&pageSize=100`,
+                () => {
+                    isLoading.value = true;
+                },
+                () => {
+                    isLoading.value = false;
+                }
+            )
                 .then((response) => {
+
+                    
                     roles.value = response.roles || [];
                     showRoleSelectionRef.value = true;
                 })
                 .catch((error) => {
+
+                    
                     console.error('Error fetching roles:', error);
                 });
 
         };
 
         const selectRole = async (roleId) => {
+
+            
             selectedUser.value.role_info.role_id = roleId; // Update user's role ID
-            postData("changeUserRole", { log_id: getAccount().value, id: selectedUser.value.id, role_id: roleId })
+            postData("changeUserRole", { log_id: getAccount().value, id: selectedUser.value.id, role_id: roleId },
+                () => {
+                    isLoading.value = true;
+                },
+                () => {
+                    isLoading.value = false;
+                })
                 .then((response) => {
                     showRoleSelectionRef.value = false; // Hide role selection component
                     snackbarRef.value.show('Role updated successfully', 'success', 3000);
                     fetchData();
                 })
                 .catch((error) => {
+
+                    
                     showRoleSelectionRef.value = false;
                     snackbarRef.value.show('Error updating role', 'error', 3000);
                     console.error(error);
@@ -177,6 +239,7 @@ export default {
             currentPage,
             pageSize,
             snackbarRef,
+            isLoading,
             roles,
             selectedUser,
             selectedRoleId,
@@ -194,7 +257,8 @@ export default {
     },
     components: {
         Snackbar,
-        TableEmpty
+        TableEmpty,
+        AppLoading
     }
 };
 </script>

@@ -407,8 +407,8 @@ option:disabled {
   width: 100%;
   text-align: center !important;
   color: #00a36c;
-    margin-top: 32px;
-      margin-bottom: 32px;
+  margin-top: 32px;
+  margin-bottom: 32px;
 }
 
 .no-records p{

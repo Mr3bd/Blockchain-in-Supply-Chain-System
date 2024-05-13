@@ -43,7 +43,7 @@
                 </td>
             </tr>
         </tbody>
-        <TableEmpty :length="requests.length" colms="7"></TableEmpty>
+        <TableEmpty :length="requests.length" colms="7" :isLoading="isLoading"></TableEmpty>
 
     </table>
     <div class="pn-buttons-container">
@@ -76,6 +76,8 @@
         </v-card>
     </v-dialog>
     <Snackbar ref="snackbarRef" />
+    <AppLoading :isLoading="isLoading"></AppLoading>
+
 </template>
 
 
@@ -87,6 +89,7 @@ import Snackbar from '@/components/Snackbar.vue';
 import { QaManagementABI, qaContractAddress } from '@/contracts/QaManagementABI.js';
 import Web3 from 'web3'; // Import Web3 library
 import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
+import AppLoading from "../components/DashboardPage/AppLoading.vue";
 
 export default {
     setup() {
@@ -106,8 +109,16 @@ export default {
             selectedResult.value = null;
             selectedRequest.value = null;
         };
+        const isLoading = ref(false);
+
         const fetchData = async () => {
-            getData(`getQARequests?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
+            getData(`getQARequests?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`,
+                () => {
+                    isLoading.value = true;
+                },
+                () => {
+                    isLoading.value = false;
+                })
                 .then((response) => {
                     requests.value = response.requests || [];
                 })
@@ -164,7 +175,13 @@ export default {
                     request_id: request.trans_id,
                     product_id: request.product,
                     trans_id: trans_id
-                }).then((response) => {
+                },
+                    () => {
+                        isLoading.value = true;
+                    },
+                    () => {
+                        isLoading.value = false;
+                    }).then((response) => {
 
                     if (response.success != null) {
                         closeDialog();
@@ -225,7 +242,13 @@ export default {
                         product_id: request.product,
                         trans_id: trans_id,
                         product_status: res
-                    }).then((response) => {
+                    },
+                        () => {
+                            isLoading.value = true;
+                        },
+                        () => {
+                            isLoading.value = false;
+                        }).then((response) => {
 
                         if (response.success != null) {
                             closeDialog();
@@ -271,7 +294,8 @@ export default {
             getAccount,
             acceptRequest,
             completeRequest,
-            snackbarRef
+            snackbarRef,
+            isLoading
         };
     },
     data() {
@@ -283,7 +307,8 @@ export default {
     },
     components: {
         Snackbar,
-        TableEmpty
+        TableEmpty,
+        AppLoading
     },
 };
 </script>

@@ -55,7 +55,7 @@
                 </td>
             </tr>
         </tbody>
-        <TableEmpty :length="products.length" colms="8"></TableEmpty>
+        <TableEmpty :length="products.length" colms="8" :isLoading="isLoading"></TableEmpty>
 
     </table>
     <div class="pn-buttons-container">
@@ -100,6 +100,8 @@
     </v-dialog>
 
     <Snackbar ref="snackbarRef" />
+    <AppLoading :isLoading="isLoading"></AppLoading>
+
 </template>
 
 
@@ -112,6 +114,7 @@ import Snackbar from '@/components/Snackbar.vue';
 import { QaManagementABI, qaContractAddress } from '@/contracts/QaManagementABI.js';
 import Web3 from 'web3'; // Import Web3 library
 import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
+import AppLoading from "../components/DashboardPage/AppLoading.vue";
 
 export default {
     setup() {
@@ -119,6 +122,7 @@ export default {
         const products = ref([]);
         let currentPage = ref(1);
         const isDialogVisible = ref(false);
+        const isLoading = ref(false);
         const cancelMode = ref(false);
         const reward = ref(null);
         const web3 = new Web3(window.ethereum);
@@ -155,22 +159,45 @@ export default {
             };
         };
         const fetchData = async () => {
-            getData(`getProducts?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
+
+            getData(`getProducts?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`,
+                () => {
+                    isLoading.value = true;
+                },
+                () => {
+                    isLoading.value = false;
+                })
                 .then((response) => {
+
+                    
                     products.value = response.products || [];
                 })
                 .catch((error) => {
+
+                    
                     console.error("Error while making Get request:", error);
                 });
         };
 
         const getQaRequest = async () => {
-            getData(`getQaRequest?log_id=${getAccount().value}&product_id=${selected_product.value.trans_id}&status=1`)
+
+            
+            getData(`getQaRequest?log_id=${getAccount().value}&product_id=${selected_product.value.trans_id}&status=1`,
+            () => {
+               isLoading.value = true;
+            },
+            () => {
+               isLoading.value = false;
+            })
                 .then((response) => {
+
+                    
                     qaReqData.value = response.request_data;
                     console.log(qaReqData.value);
                 })
                 .catch((error) => {
+
+                    
                     console.error("Error while making Get request:", error);
                 });
         };
@@ -231,6 +258,7 @@ export default {
 
             else {
 
+                
                 const contractAddress = qaContractAddress;
                 const contract = new web3.eth.Contract(QaManagementABI, contractAddress);
                 const rewardInEther = web3.utils.toWei((reward.value).toString(), 'ether');
@@ -250,8 +278,15 @@ export default {
                         product_id: selected_product.value.trans_id,
                         reward: reward.value,
                         item_count: reqId,
-                    }).then((response) => {
+                    },
+                        () => {
+                            isLoading.value = true;
+                        },
+                        () => {
+                            isLoading.value = false;
+                        }).then((response) => {
 
+                        
                         if (response.success != null) {
                             closeDialog();
                             snackbarRef.value.show('The request has been sent', 'success', 3000);
@@ -262,6 +297,8 @@ export default {
                         }
                     })
                         .catch((error) => {
+
+                            
                             console.log(error);
 
                             snackbarRef.value.show('Error sending request', 'error', 3000);
@@ -269,6 +306,8 @@ export default {
 
 
                 } catch (error) {
+
+                    
                     console.error(error);
                     snackbarRef.value.show('Error sending request', 'error', 3000);
                 }
@@ -279,6 +318,8 @@ export default {
         const cancelQaRequest = async () => {
             const contractAddress = qaContractAddress;
             const contract = new web3.eth.Contract(QaManagementABI, contractAddress);
+
+            
             try {
                 const tx = await contract.methods.cancelQARequest(
                     qaReqData.value.item_count
@@ -289,18 +330,24 @@ export default {
                     log_id: getAccount().value,
                     request_id: qaReqData.value.trans_id,
                     trans_id: trans_id
-                }).then((response) => {
+                },
+                    () => {
+                        isLoading.value = true;
+                    },
+                    () => {
+                        isLoading.value = false;
+                    }).then((response) => {
 
                     if (response.success != null) {
                         closeDialog();
                         snackbarRef.value.show('The request has been sent', 'success', 3000);
                     }
                     else {
-
                         snackbarRef.value.show('Error sending request', 'error', 3000);
                     }
                 })
                     .catch((error) => {
+
                         console.log(error);
 
                         snackbarRef.value.show('Error sending request', 'error', 3000);
@@ -308,6 +355,7 @@ export default {
 
 
             } catch (error) {
+
                 console.error(error);
                 snackbarRef.value.show('Error sending request', 'error', 3000);
             }
@@ -337,7 +385,8 @@ export default {
             getAccount,
             addQaTask,
             cancelQaRequest,
-            snackbarRef
+            snackbarRef,
+            isLoading
         };
     },
     data() {
@@ -349,7 +398,8 @@ export default {
     },
     components: {
         Snackbar,
-        TableEmpty
+        TableEmpty,
+        AppLoading
     },
 };
 </script>
