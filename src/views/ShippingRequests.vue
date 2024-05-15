@@ -125,6 +125,8 @@
     </v-dialog>
 
     <Snackbar ref="snackbarRef" />
+    <AppLoading :isLoading="isLoading"></AppLoading>
+
 </template>
 
 
@@ -136,6 +138,7 @@ import Snackbar from '@/components/Snackbar.vue';
 import { ShippingManagementABI, shippingContractAddress } from '@/contracts/ShippingManagementABI.js';
 import Web3 from 'web3'; // Import Web3 library
 import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
+import AppLoading from "../components/DashboardPage/AppLoading.vue";
 
 export default {
     setup() {
@@ -144,7 +147,8 @@ export default {
         let currentPage = ref(1);
         const selected_req = ref(null);
         const isDialogVisible = ref(false);
-        const showDialog = (order_val, isCancel) => {
+        const isLoading = ref(false);
+        const showDialog = (order_val) => {
            
             isDialogVisible.value = true;
             selected_req.value = order_val;
@@ -153,7 +157,13 @@ export default {
             isDialogVisible.value = false;
         };
         const fetchData = async () => {
-            getData(`getShippingRequests?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`)
+            getData(`getShippingRequests?log_id=${getAccount().value}&page=${currentPage.value}&pageSize=${pageSize}`,
+                () => {
+                    isLoading.value = true;
+                },
+                () => {
+                    isLoading.value = false;
+                })
                 .then((response) => {
                     requests.value = response.requests || [];
                 })
@@ -209,7 +219,13 @@ export default {
                     request_id: request.trans_id,
                     order_id: request.product_order,
                     trans_id: trans_id
-                }).then((response) => {
+                },
+                    () => {
+                        isLoading.value = true;
+                    },
+                    () => {
+                        isLoading.value = false;
+                    }).then((response) => {
 
                     if (response.success != null) {
                         snackbarRef.value.show('The request has been accepted', 'success', 3000);
@@ -252,7 +268,13 @@ export default {
                         request_id: request.trans_id,
                         order_id: request.product_order,
                         trans_id: trans_id
-                    }).then((response) => {
+                    },
+                        () => {
+                            isLoading.value = true;
+                        },
+                        () => {
+                            isLoading.value = false;
+                        }).then((response) => {
 
                         if (response.success != null) {
                             snackbarRef.value.show('The request has been completed', 'success', 3000);
@@ -298,6 +320,7 @@ export default {
             acceptRequest,
             completeRequest,
             snackbarRef,
+            isLoading
         };
     },
     data() {
@@ -309,7 +332,8 @@ export default {
     },
     components: {
         Snackbar,
-        TableEmpty
+        TableEmpty,
+        AppLoading
     },
 };
 </script>

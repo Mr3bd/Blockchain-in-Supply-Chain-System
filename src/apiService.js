@@ -1,6 +1,7 @@
 const base_url = "http://127.0.0.1:8000/api"; // Your base API URL
+import { user } from "@/globalVariables";
 
-export const pageSize = 8; 
+export const pageSize = 8;
 export const postData = async (
   endpoint,
   data,
@@ -8,7 +9,6 @@ export const postData = async (
   hideLoadingCallback
 ) => {
   console.log(`${base_url}/${endpoint}`);
-  console.log(data);
   showLoadingCallback();
 
   try {
@@ -16,7 +16,7 @@ export const postData = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Add any additional headers if required
+        "Authorization": `Token ${user.value.token}`,
       },
       body: JSON.stringify(data),
     });
@@ -31,17 +31,21 @@ export const postData = async (
   }
 };
 
-
 export const getData = async (
   endpoint,
   showLoadingCallback,
   hideLoadingCallback
 ) => {
-   console.log(`${base_url}/${endpoint}`);
-   showLoadingCallback();
-
+  console.log(`${base_url}/${endpoint}`);
+  showLoadingCallback();
   try {
-    const response = await fetch(`${base_url}/${endpoint}`);
+    const response = await fetch(`${base_url}/${endpoint}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Token ${user.value.token}`,
+      },
+  
+    });
     const responseData = await response.json();
     hideLoadingCallback();
 
