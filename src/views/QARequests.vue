@@ -88,8 +88,8 @@ import { getData, postData, pageSize } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 import { QaManagementABI, qaContractAddress } from '@/contracts/QaManagementABI.js';
 import Web3 from 'web3'; // Import Web3 library
-import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
 import AppLoading from "../components/DashboardPage/AppLoading.vue";
+import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
 
 export default {
     setup() {

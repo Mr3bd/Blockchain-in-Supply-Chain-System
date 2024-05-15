@@ -73,7 +73,7 @@ export default {
 					const trans_id = tx['transactionHash'];
 					const materialId = tx.events.MaterialAdded.returnValues.materialId.toString();
 					set_balance();
-
+					console.log(tx);
 					await postData("addMaterial", {
 						log_id: getAccount().value,
 						trans_id: trans_id,
