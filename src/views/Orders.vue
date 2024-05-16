@@ -276,7 +276,15 @@ export default {
                         log_id: getAccount().value,
                         order_id: order.trans_id,
                         trans_id: trans_id
-                    }).then((response) => {
+                    },
+                        () => {
+                            // showLoading function
+                            isLoading.value = true;
+                        },
+                        () => {
+                            // hideLoading function
+                            isLoading.value = false;
+                        }).then((response) => {
                         if (response.success != null) {
                             fetchData();
                             snackbarRef.value.show('Successfully', 'success', 3000);
@@ -367,7 +375,15 @@ export default {
                         street: shipReqDto.value.street,
                         zipcode: shipReqDto.value.zipcode,
                         building: shipReqDto.value.building,
-                    }).then((response) => {
+                    },
+                        () => {
+                            // showLoading function
+                            isLoading.value = true;
+                        },
+                        () => {
+                            // hideLoading function
+                            isLoading.value = false;
+                        }).then((response) => {
 
                         if (response.success != null) {
                             closeDialog();
@@ -406,7 +422,15 @@ export default {
                     log_id: getAccount().value,
                     request_id: shipReqData.value.trans_id,
                     trans_id: trans_id
-                }).then((response) => {
+                },
+                    () => {
+                        // showLoading function
+                        isLoading.value = true;
+                    },
+                    () => {
+                        // hideLoading function
+                        isLoading.value = false;
+                    }).then((response) => {
 
                     if (response.success != null) {
                         closeDialog();
@@ -432,7 +456,15 @@ export default {
 
         };
         const getShippingRequest = async () => {
-            getData(`getShippingRequest?log_id=${getAccount().value}&order_id=${selected_order.value.trans_id}&status=1`)
+            getData(`getShippingRequest?log_id=${getAccount().value}&order_id=${selected_order.value.trans_id}&status=1`,
+                () => {
+                    // showLoading function
+                    isLoading.value = true;
+                },
+                () => {
+                    // hideLoading function
+                    isLoading.value = false;
+                })
                 .then((response) => {
                     console.log(response);
                     shipReqData.value = response.request_data;
