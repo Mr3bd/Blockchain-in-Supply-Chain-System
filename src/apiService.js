@@ -16,12 +16,14 @@ export const postData = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Token ${user.value.token}`,
+        Authorization: `Token ${user.value.token}`,
       },
       body: JSON.stringify(data),
     });
     const responseData = await response.json();
+    await delay(1500);
     hideLoadingCallback();
+
     return responseData;
   } catch (error) {
     hideLoadingCallback();
@@ -42,11 +44,12 @@ export const getData = async (
     const response = await fetch(`${base_url}/${endpoint}`, {
       method: "GET",
       headers: {
-        "Authorization": `Token ${user.value.token}`,
+        Authorization: `Token ${user.value.token}`,
       },
-  
     });
     const responseData = await response.json();
+    await delay(1500);
+
     hideLoadingCallback();
 
     return responseData;
@@ -57,3 +60,7 @@ export const getData = async (
     throw error;
   }
 };
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

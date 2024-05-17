@@ -92,7 +92,15 @@ export default {
         const materialBlocks = ref([]);
 
         const fetchData = async () => {
-            getData(`getAvailableMaterials?log_id=${getAccount().value}`)
+            getData(`getAvailableMaterials?log_id=${getAccount().value}`,
+                () => {
+                    // showLoading function
+                    isLoading.value = true;
+                },
+                () => {
+                    // hideLoading function
+                    isLoading.value = false;
+                })
                 .then((response) => {
                     materials.value = response.materials || [];
                 })
