@@ -16,9 +16,9 @@
 				<span v-if="user.unReadNoti > 0" class="counter">{{ user.unReadNoti }}</span>
 
 			</router-link>
-			<router-link v-if="HasPermission('getUsers')" to="/dashboard/users" class="button">
+			<router-link v-if="user.id == null" to="/dashboard/users" class="button">
 				<span class="material-icons">group</span>
-				<span class="text">Users</span>
+				<span class="text">Team</span>
 			</router-link>
 			<router-link v-if="HasPermission('getMaterials')" to="/dashboard/materials" class="button">
 				<span class="material-icons">list</span>
@@ -90,10 +90,23 @@ const ToggleMenu = () => {
 import { user } from '@/globalVariables';
 
 const HasPermission = (role) => {
-	if (user.value.role_info.role_id == 1) {
+	console.log(role);
+	console.log(user.value.permissions == null);
+	if (user.value === null)
+	{
+		return false;
+	}
+	else if (user.value.permissions == null)
+	{
+		return false;
+	}
+	else if (user.value.role_info.role_id == 1) {
 		return true;
 	}
-	return user.value.permissions.includes(role);
+	else {
+		return user.value.permissions.includes(role);
+		
+	}
 }
 </script>
 

@@ -1,9 +1,9 @@
 <template>
     <div class="app-header">
-        <h2 class="page-head">Users</h2>
+        <h2 class="page-head">Team</h2>
         <button @click="goToAddUserPage" class="add-button">
             <span class="material-icons">add</span>
-            <span>Add</span>
+            <span>Join</span>
         </button>
     </div>
     <table class="app-table">
@@ -12,7 +12,7 @@
                 <th>Wallet Id</th>
                 <th>Name</th>
                 <th>Role</th>
-                <th>Status</th>
+                <!-- <th>Status</th> -->
                 <th>Logtime</th>
             </tr>
         </thead>
@@ -20,18 +20,19 @@
             <tr v-for="user in users" :key="user.id">
                 <td>{{ user.id }}</td>
                 <td>{{ user.name }}</td>
-                <td>
+                <td>{{ user.role_info.role_name }}</td>
+                <!-- <td>
                     <template v-if="user.id === getAccount().value">
 
                     </template>
 
                     <template v-else>
-                        <button @click="openRoleSelection(user)" class="role-button">{{ user.role_info.role_name
+                        <button @click="" class="role-button">{{ user.role_info.role_name
                             }}</button>
                     </template>
-                </td>
+                </td> -->
 
-                <td>
+                <!-- <td>
                     <template v-if="user.id === getAccount().value">
 
                     </template>
@@ -41,7 +42,7 @@
                     <template v-else>
                         <button @click="activateUser(user.id)" class="activate-button">Activate</button>
                     </template>
-                </td>
+                </td> -->
                 <td>{{ user.logtime }}</td>
             </tr>
         </tbody>

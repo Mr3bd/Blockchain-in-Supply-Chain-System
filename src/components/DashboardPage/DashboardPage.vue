@@ -20,6 +20,7 @@
     </div>
 
   </div>
+  <AppLoading :isLoading="accountBalance === null"></AppLoading>
 </template>
 
 
@@ -28,9 +29,9 @@
 import Sidebar from './Sidebar.vue'
 import AppBar from '../AppBar.vue'
 import CustomParticles from '../LoginPage/Particles.vue'
-import { user } from '@/globalVariables';
+import { user, accountBalance } from '@/globalVariables';
 import router from "@/router.js"; // Import the Vue Router instance
-
+import AppLoading from "./AppLoading.vue";
 
 // Determine the default route based on the user's role
 const defaultRoute = () => {

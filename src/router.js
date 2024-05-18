@@ -45,55 +45,59 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 });
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!getAccount().value;
-  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
-  if (requiresAuth && !isAuthenticated) {
-    // If authentication is required but user is not authenticated,
-    // redirect to the login page
-    next("/login");
-  } else if (isAuthenticated && to.path === "/") {
-    // If user is authenticated and navigates to the root path,
-    // redirect to the dashboard page
-    if (accountBalance.value == null) {
-      set_balance();
+router.beforeEach((to, from, next) => {
+
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  console.log("gg");
+  console.log(to.path);
+  if (getAccount().value == null && requiresAuth) {
+    if (to.path != "/login") {
+      next("/login");
     }
-    next("/dashboard");
+
+    // Redirect to login if not authenticated
   } else {
-    if (user.value.id != null) {
+    console.log("xx");
+
+    if (to.path == "/" || to.path == "/dashboard") {
+      console.log("zz");
+
+      getLogin();
+
+      next(); // Proceed to the route
+    } else if (to.path == "/login") {
+      console.log("yy");
+
       next();
-      if (accountBalance.value == null) {
-        set_balance();
-      }
     } else {
-      if (getAccount().value != null) {
-        check_login(next);
-      } else {
-        next();
-      }
+      next();
     }
   }
 });
 
-export const check_login = async (next) => {
-  postData("login", { id: getAccount().value }, ()=> {}, ()=>{})
+export const getLogin = async (next) => {
+  postData(
+    "login",
+    { id: getAccount().value },
+    () => {},
+    () => {}
+  )
     .then((response) => {
-      user.value = response["user"];
-      console.log(response);
-      if (user.value.deleted == 1) {
-        logout();
-      } else {
-        if (accountBalance.value == null) {
-          set_balance();
-        }
-        next();
+      console.log("login router.js");
+      if (response["user"] != null) {
+        user.value = response["user"];
       }
+      if (accountBalance.value == null) {
+        set_balance();
+      }
+      
     })
     .catch((error) => {
       console.error("Error while making POST request:", error);
-      // Handle the error as needed
-      logout();
+      if (accountBalance.value == null) {
+        set_balance();
+      }
     });
 };
 

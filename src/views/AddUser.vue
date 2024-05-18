@@ -1,10 +1,10 @@
 <template>
 
    <div class="container">
-      <h2 class="input-title">Add User</h2>
+      <h2 class="input-title">Join the team</h2>
       <div class="input-box">
          <label for="wId">Wallet Id:</label>
-         <input id="wId" type="text" placeholder="Enter Id" v-model="wId" />
+         <input :disabled="true" id="wId" type="text" placeholder="Enter Id" v-model="getAccount().value" />
       </div>
 
       <div class="input-box">
@@ -20,7 +20,7 @@
       <div class='add-button-container'>
          <button @click="addUser" class="add-button" :class="{ 'disabled': isInvalidData }" :disabled="isInvalidData">
             <span class="material-icons">add</span>
-            <span>Add</span>
+            <span>Join</span>
          </button>
       </div>
 
@@ -48,7 +48,7 @@ import { postData, getData } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 import { ref } from 'vue';
 import AppLoading from "../components/DashboardPage/AppLoading.vue";
-
+import router from "@/router.js"; // Import the Vue Router instance
 export default {
    setup() {
 
@@ -102,7 +102,7 @@ export default {
 
    computed: {
       isInvalidData() {
-         return this.wId === '' || this.uName === '' || this.selectedRoleId === null;
+         return this.getAccount().value === null || this.uName === '' || this.selectedRoleId === null;
       },
       buttonText() {
          if (this.selectedRoleId === null) {
@@ -120,7 +120,7 @@ export default {
    methods: {
       addUser: async function () { // Mark the function as async
          if (!this.isInvalidData) {
-            await postData("addUser", { log_id: getAccount().value, id: this.wId, name: this.uName, role: this.selectedRoleId },
+            await postData("addUser", { log_id: getAccount().value, id: this.getAccount().value, name: this.uName, role: this.selectedRoleId },
                () => {
                   this.isLoading = true;
                },
@@ -136,7 +136,7 @@ export default {
                      this.uName = '';
                      this.selectedRoleId = null;
                      this.$refs.snackbarRef.show('The user has been added', 'success', 3000);
-
+                     router.replace('/');
                   }
                   else {
                      this.$refs.snackbarRef.show('Error adding user', 'error', 3000);

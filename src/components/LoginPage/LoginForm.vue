@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { initWeb3, login, openMetaMask } from '../../web3Service'; // Import the web3Service.js file
+import {  openMetaMask } from '../../web3Service'; // Import the web3Service.js file
 
 export default {
   name: 'LoginPage',
