@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getAccount } from "@/web3Service.js" // Import the web3Service.js file
+import { getAccount, set_balance } from "@/web3Service.js" // Import the web3Service.js file
 import { postData, getData } from "@/apiService.js";
 import Snackbar from '@/components/Snackbar.vue';
 import { ref } from 'vue';
