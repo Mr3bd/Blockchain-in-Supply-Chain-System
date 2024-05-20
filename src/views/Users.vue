@@ -1,7 +1,8 @@
 <template>
     <div class="app-header">
         <h2 class="page-head">Team</h2>
-        <button @click="goToAddUserPage" class="add-button">
+
+        <button v-if="user.id == null" @click="goToAddUserPage" class="add-button">
             <span class="material-icons">add</span>
             <span>Join</span>
         </button>
@@ -17,10 +18,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="user in users" :key="user.id">
-                <td>{{ user.id }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.role_info.role_name }}</td>
+            <tr v-for="u in users" :key="u.id">
+                <td>{{ u.id }}</td>
+                <td>{{ u.name }}</td>
+                <td>{{ u.role_info.role_name }}</td>
                 <!-- <td>
                     <template v-if="user.id === getAccount().value">
 
@@ -43,7 +44,7 @@
                         <button @click="activateUser(user.id)" class="activate-button">Activate</button>
                     </template>
                 </td> -->
-                <td>{{ user.logtime }}</td>
+                <td>{{ u.logtime }}</td>
             </tr>
         </tbody>
         <TableEmpty :length="users.length" colms="5" :isLoading="isLoading"></TableEmpty>
@@ -84,6 +85,7 @@ import Snackbar from '@/components/Snackbar.vue';
 import { reactive } from 'vue';
 import TableEmpty from "../components/DashboardPage/TableEmpty.vue";
 import AppLoading from "../components/DashboardPage/AppLoading.vue";
+import { user } from '@/globalVariables';
 
 export default {
     setup() {
@@ -253,6 +255,7 @@ export default {
             getAccount,
             selectRole,
             openRoleSelection,
+            user
             
         };
     },

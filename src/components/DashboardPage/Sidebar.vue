@@ -16,9 +16,16 @@
 				<span v-if="user.unReadNoti > 0" class="counter">{{ user.unReadNoti }}</span>
 
 			</router-link>
-			<router-link v-if="user.id == null" to="/dashboard/users" class="button">
+			<router-link to="/dashboard/users" class="button">
 				<span class="material-icons">group</span>
-				<span class="text">Team</span>
+
+				<template v-if="user.id == null">
+					<span class="text">Team</span>
+				</template>
+				<template v-else>
+					<span class="text">Users</span>
+				</template>
+
 			</router-link>
 			<router-link v-if="HasPermission('getMaterials')" to="/dashboard/materials" class="button">
 				<span class="material-icons">list</span>

@@ -1,7 +1,14 @@
 <template>
 
    <div class="container">
-      <h2 class="input-title">Join the team</h2>
+      <template v-if="user.id === null">
+         <h2 class="input-title">Join the team</h2>
+      </template>
+
+      <template v-else>
+         <h2 class="input-title">Users</h2>
+      </template>
+
       <div class="input-box">
          <label for="wId">Wallet Id:</label>
          <input :disabled="true" id="wId" type="text" placeholder="Enter Id" v-model="getAccount().value" />
@@ -51,6 +58,8 @@ import AppLoading from "../components/DashboardPage/AppLoading.vue";
 import router from "@/router.js"; // Import the Vue Router instance
 import Web3 from 'web3'; // Import Web3 library
 import { UserManagementABI, userContractAddress } from '@/contracts/UserManagementABI.js';
+import { user } from '@/globalVariables';
+
 export default {
    setup() {
 
@@ -98,7 +107,8 @@ export default {
          getAccount,
          selectRole,
          openRoleSelection,
-         isLoading
+         isLoading,
+         user
       };
    },
 
