@@ -49,6 +49,8 @@ import Snackbar from '@/components/Snackbar.vue';
 import { ref } from 'vue';
 import AppLoading from "../components/DashboardPage/AppLoading.vue";
 import router from "@/router.js"; // Import the Vue Router instance
+import Web3 from 'web3'; // Import Web3 library
+import { UserManagementABI, userContractAddress } from '@/contracts/UserManagementABI.js';
 export default {
    setup() {
 
@@ -120,32 +122,60 @@ export default {
    methods: {
       addUser: async function () { // Mark the function as async
          if (!this.isInvalidData) {
-            await postData("addUser", { log_id: getAccount().value, id: this.getAccount().value, name: this.uName, role: this.selectedRoleId },
-               () => {
-                  this.isLoading = true;
-               },
-               () => {
-                  this.isLoading = false;
-               },
-            )
-               .then((response) => {
 
-                  console.log(response.success != null);
-                  if (response.success != null) {
-                     this.wId = '';
-                     this.uName = '';
-                     this.selectedRoleId = null;
-                     this.$refs.snackbarRef.show('The user has been added', 'success', 3000);
-                     router.replace('/');
-                  }
-                  else {
+
+            const web3 = new Web3(window.ethereum);
+
+            const contractAddress = userContractAddress;
+            const contract = new web3.eth.Contract(UserManagementABI, contractAddress); 
+
+            try {
+               // Call the addMaterial function of the smart contract
+               const tx = await contract.methods.addUser(
+                  web3.utils.toChecksumAddress(getAccount().value),
+                  this.uName,
+                  this.selectedRoleId
+               ).send({ from: getAccount().value,  }); // Use accounts[0]
+               console.log(tx);
+               set_balance();
+               await postData("addUser", { log_id: getAccount().value, id: this.getAccount().value, name: this.uName, role: this.selectedRoleId },
+                  () => {
+                     this.isLoading = true;
+                  },
+                  () => {
+                     this.isLoading = false;
+                  },
+               )
+                  .then((response) => {
+
+                     console.log(response.success != null);
+                     if (response.success != null) {
+                        this.wId = '';
+                        this.uName = '';
+                        this.selectedRoleId = null;
+                        this.$refs.snackbarRef.show('The user has been added', 'success', 3000);
+                        router.replace('/');
+                     }
+                     else {
+                        this.$refs.snackbarRef.show('Error adding user', 'error', 3000);
+                     }
+                  })
+                  .catch((error) => {
+
                      this.$refs.snackbarRef.show('Error adding user', 'error', 3000);
-                  }
-               })
-               .catch((error) => {
+                  });
 
-                  this.$refs.snackbarRef.show('Error adding user', 'error', 3000);
-               });
+            } catch (error) {
+
+               console.error(error);
+
+               this.$refs.snackbarRef.show('Error adding user', 'error', 3000);
+            }
+
+
+
+
+           
          }
       }
    },
